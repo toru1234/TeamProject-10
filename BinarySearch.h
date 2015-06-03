@@ -1,199 +1,44 @@
 
-#include "BinarySearch.h"
 
+#ifndef __TeamProject__BinarySearch__
+#define __TeamProject__BinarySearch__
 
-///////////////////////// public function definitions ///////////////////////////
+#include <stdio.h>
+#include "BinaryTree.h"
 
-bool BinarySearchTree::insert(const Website & newEntry)
+class BinarySearchTree : public BinaryTree
 {
-    BinaryNode* newNodePtr = new BinaryNode(newEntry);
-    this->rootPtr = _insert(this->rootPtr, newNodePtr);
-    // increament count
-    this->count ++;
-    return true;
-}
-
-
-bool BinarySearchTree::remove(const Website & target)
-{
-    bool isSuccessful = false;
-    this->rootPtr = _remove(this->rootPtr, target, isSuccessful);
-    // drcrease count
-    if (isSuccessful)
-    {
-        this->count --;
-    }
-    return isSuccessful;
-}
-
-
-bool BinarySearchTree::getEntry(const Website& anEntry, Website & returnedItem) const
-{
-    // check if the entry is valid
-    if (findNode(this->rootPtr, anEntry) == 0)
-    {
-        return false;
-    }
-    else
-    {
-        returnedItem = findNode(this->rootPtr, anEntry)->getWebsite();
-        return true;
-    }
-}
-
-
-
-//////////////////////////// private functions ////////////////////////////////////////////
-
-BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr,
-                                                          BinaryNode* newNodePtr)
-{
-    // if there is no node at all
-    if (nodePtr == 0)
-    {
-        nodePtr = newNodePtr;
-        return nodePtr;
-    }
-    // insert smaller
-    if(newNodePtr->getWebsite() < nodePtr->getWebsite())
-    {
-        nodePtr->setLeftPtr(_insert(nodePtr->getLeftPtr(), newNodePtr));
-    }
-    // If there is node, insert bigger(equal)
-    else
-    {
-        nodePtr->setRightPtr(_insert(nodePtr->getRightPtr(), newNodePtr));
-    }
+private:
+    // internal insert node: insert newNode in nodePtr subtree
+    BinaryNode* _insert(BinaryNode* nodePtr, BinaryNode* newNode);
     
-    return nodePtr;
-}
-
-BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr,
-                                                          const Website target,
-                                                          bool & success)
-
-{
-    if (nodePtr == 0)
-    {
-        success = false;
-        return 0;
-    }
-    if (nodePtr->getWebsite() > target)
-        nodePtr->setLeftPtr(_remove(nodePtr->getLeftPtr(), target, success));
-    else if (nodePtr->getWebsite() < target)
-        nodePtr->setRightPtr(_remove(nodePtr->getRightPtr(), target, success));
-    else
-    {
-        nodePtr = deleteNode(nodePtr);
-        success = true;
-    }
-    return nodePtr;
-}
-
-BinaryNode* BinarySearchTree::deleteNode(BinaryNode* nodePtr)
-{
-    if (nodePtr->isLeaf())
-    {
-        delete nodePtr;
-        nodePtr = 0;
-        return nodePtr;
-    }
-    else if (nodePtr->getLeftPtr() == 0)
-    {
-        BinaryNode* nodeToConnectPtr = nodePtr->getRightPtr();
-        delete nodePtr;
-        nodePtr = 0;
-        return nodeToConnectPtr;
-    }
-    else if (nodePtr->getRightPtr() == 0)
-    {
-        BinaryNode* nodeToConnectPtr = nodePtr->getLeftPtr();
-        delete nodePtr;
-        nodePtr = 0;
-        return nodeToConnectPtr;
-    }
-    else
-    {
-        Website newNodeValue;
-        nodePtr->setRightPtr(removeLeftmostNode(nodePtr->getRightPtr(), newNodeValue));
-        nodePtr->setItem(newNodeValue);
-        return nodePtr;
-    }
-}
-
-BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr,
-                                                                     Website & successor)
-{
-    if (nodePtr->getLeftPtr() == 0)
-    {
-        successor = nodePtr->getWebsite();
-        return deleteNode(nodePtr);
-    }
-    else
-    {
-        nodePtr->setLeftPtr(removeLeftmostNode(nodePtr->getLeftPtr(), successor));
-        this->count--;
-        return nodePtr;
-    }
-}
-
-
-BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr,
-                                                           const Website & target) const
-{
-    // tree is empty
-    if (nodePtr == 0)
-    {
-        return 0;
-    }
+    // internal remove node: locate and delete target node under nodePtr subtree
+    BinaryNode* _remove(BinaryNode* nodePtr, const Website target, bool & success);
     
-    // tree is not empty
-    // Iterate through the tree
-    else if (nodePtr->getWebsite() > target)
-    {
-        return findNode(nodePtr->getLeftPtr(), target);
-    }
-    else if (nodePtr->getWebsite() < target)
-    {
-        return findNode(nodePtr->getRightPtr(), target);
-    }
-    return nodePtr;
-}
+    // delete target node from tree, called by internal remove node
+    BinaryNode* deleteNode(BinaryNode* targetNodePtr);
+    
+    // remove the leftmost node in the left subtree of nodePtr
+    BinaryNode* removeLeftmostNode(BinaryNode* nodePtr, Website & successor);
+    
+    // search for target node
+    BinaryNode* findNode(BinaryNode* treePtr, const Website & target) const;
+    
+    
+    
+public:
+    // insert a node at the correct location
+    bool insert(const Website & newEntry);
+    // remove a node if found
+    bool remove(const Website & anEntry);
+    // find a target node
+    bool getEntry(const Website & target, Website & returnedItem) const;
+    // print largest item
+    bool getHighestKeyItem(Website & highestKeyItem) const;
+    // print smallest item
+    bool getLowestKeyItem(Website & lowestKeyItem) const;
+    
+    
+};
 
-bool BinarySearchTree::getHighestKeyItem(Website & largestItem) const
-{
-    // Return if the tree is empty
-    if (this->isEmpty())
-    {
-        return false;
-    }
-    
-    BinaryNode* maxNode = this->rootPtr;
-    while(maxNode->getRightPtr() != 0)
-    {
-        maxNode = maxNode->getRightPtr();
-    }
-    
-    largestItem = maxNode->getWebsite();
-    
-    return true;
-}
-
-bool BinarySearchTree::getLowestKeyItem(Website & lowestKeyItem) const
-{
-    // Return if the tree is empty
-    if (this->isEmpty())
-    {
-        return false;
-    }
-    
-    BinaryNode* minNode = this->rootPtr;
-    while(minNode->getLeftPtr() != 0)
-    {
-        minNode = minNode->getLeftPtr();
-    }
-    
-    lowestKeyItem = minNode->getWebsite();
-    
-    return true;
-}
+#endif
