@@ -1,98 +1,186 @@
 #include <iostream>
+#include <ctime>
 #include <fstream>
 #include <string>
-#include <cstdlib>
+#include "BinarySearch.h"
+
 using namespace std;
-class Website
+
+bool readFile(BinarySearchTree*);
+void caseList();
+void caseSearch();
+void searchManager(BinarySearchTree*);
+
+void display( Website& web)
 {
-private:
-    string name;                        //the name of the website
-    string nationality;                 //the nationality of the server
-    unsigned int global_rank;           //the global rank by the amount of visitor per day
-    unsigned int Avg_dailyTime_onSite;            //the average time that user stay in the website
-    string owner;                     //the name of the company or foundation that owns this website
-    float Avg_dailyView_perVisitor;       //the average daily view per visitor
-public:
-    //constructor
+    cout << web.getName() << " " << web.getNationality() << " "
+    << web.getGlobalRank() << " " << web.getAvgTime_OnSite() << " "
+    << web.getOwner() << " " << web.getAvgview_perVisitor() << endl;
+}
 
-    //setters
-    void setName(string str){name = str;}
-    void setNationality(string str){nationality = str;}
-    void setGlobalRank(unsigned int num){global_rank = num;}
-    void setAvgTime_OnSite(int time){Avg_dailyTime_onSite = time;}
-    void setOwner(string str){owner = str;}
-    void setAvgview_perVisitor(float num){Avg_dailyView_perVisitor = num;}
-
-    //getters
-    string getName(){return name;}
-    string getNationality(){return nationality;}
-    unsigned int getGlobalRank(){return global_rank;}
-    int getAvgTime_OnSite(){return Avg_dailyTime_onSite;}
-    string getOwner(){return owner;}
-    float getAvgview_perVisitor(){return Avg_dailyView_perVisitor;}
-};
-
-bool readFile();
 int main()
 {
-    if(!readFile())
-    return 1;
-
+    BinarySearchTree* treePtr = new BinarySearchTree;
+    
+    if(!readFile(treePtr)){
+        return 1;
+    }
+    
+    searchManager(treePtr);
+   
+    delete treePtr;
+    
     return 0;
 }
 
-bool readFile(){
+bool readFile(BinarySearchTree* treePtr){
     ifstream input("websiteData.txt");
     if (input.fail()){
         cout << "the file didn't open successfully";
         return false;
     }
+    
     string holdData;
-
     int numOfData = 0;
+    /*********************************/
+    
 
     getline(input, holdData);
     numOfData = atoi(holdData.data());
-
-    Website* web = new Website[numOfData];
+    
     int index = 0;
+    
+    Website web1;
     while (index < numOfData){
+        
         getline(input, holdData);
-        web[index].setName(holdData);
-        cout << holdData << endl;
-
+        web1.setName(holdData);
+        
         getline(input, holdData);
-        web[index].setNationality(holdData);
-        cout << holdData << endl;
-
+        web1.setNationality(holdData);
+        
         getline(input, holdData);
-        web[index].setGlobalRank(atoi(holdData.data()));
-        cout << holdData << endl;
-
+        web1.setGlobalRank(atoi(holdData.data()));
+        
         getline(input, holdData);
-        web[index].setAvgTime_OnSite(atoi(holdData.data()));
-        cout << holdData << endl;
-
+        web1.setAvgTime_OnSite(atoi(holdData.data()));
+        
         getline(input, holdData);
-        web[index].setOwner(holdData);
-        cout << holdData << endl;
-
+        web1.setOwner(holdData);
+        
         getline(input, holdData);
-        web[index].setAvgview_perVisitor(atof(holdData.data()));
-        cout << holdData << endl;
-
+        web1.setAvgview_perVisitor(atof(holdData.data()));
+        
+        treePtr->insert(web1);
+        
+        getline(input, holdData);
         index++;
-
+        
     }
+    
+    return true;
+}
 
+void searchManager(BinarySearchTree* treePtr)
+{
+    char choice;
+    bool quit = false;
+    
+    do {
+        cout << "Please input the letter corresponding to the function you'd like to use from the list below.\n" << endl;
+        cout << "A - Add New Website\n"
+        << "D - Delete Website\n"
+        << "S - Search for Website(s)\n"
+        << "L - List Websites\n"
+        << "Q - Quit\n"<< endl;
+        cin >> choice;
+        choice = toupper(choice);
+        cout << endl;
+        
+        switch (choice)
+        {
+            case 'A': // add
+                break;
+            case 'D': // delete
+                break;
+            case 'S': // search
+                caseSearch();
+                break;
+            case 'L': // list
+                caseList();
+                break;
+            case 'Q': // quit
+                quit = true;
+                break;
+            default:
+                cout << "Invalid input. ";
+        }
+    } while (!quit);
+}
 
-    for (int i  = 0; i < numOfData; i++){
-       cout <<  web[i].getName() << endl <<
-        web[i].getNationality() << endl <<
-        web[i].getGlobalRank() << endl<<
-        web[i].getAvgTime_OnSite() << endl<<
-        web[i].getOwner() << endl <<
-        web[i].getAvgview_perVisitor() << endl;
-    }
+void caseSearch()
+{
+    char subChoice;
+    bool invalid;
+    
+    do {
+        invalid = false;
+        cout << "Please select a search type from the options below.\n" << endl
+        << "N - Display website data for given domain name\n"
+        << "C - Display websites by country\n"
+        << "R - Return to previous menu\n" << endl;
+        cin >> subChoice;
+        subChoice = toupper(subChoice);
+        cout << endl;
+        
+        switch (subChoice)
+        {
+            case 'N': // domain name
+                break;
+            case 'C': // by country
+                break;
+            case 'R': // previous
+                break;
+            default:
+                invalid = true;
+                cout << endl << "Invalid input. ";
+                break;
+        }
+    } while (invalid);
+}
 
+void caseList()
+{
+    int subChoice;
+    bool invalid = false;
+    
+    do {
+        cout << "Please select how to display the website data from the options below.\n" << endl;
+        cout << "U - display unsorted\n"
+        << "P - display by domain name\n"
+        << "O - display by countries\n"
+        << "I - display special\n"
+        << "R - Return to previous menu\n" << endl;
+        cin >> subChoice;
+        subChoice = toupper(subChoice);
+        cout << endl;
+        
+        switch (subChoice)
+        {
+            case 'U': // unsorted
+                break;
+            case 'P': // alphabetical
+                break;
+            case 'O': // countries
+                break;
+            case 'I': // special
+                break;
+            case 'R': // previous
+                return;
+            default: 
+                invalid = true;
+                cout << "Invalid input. ";
+                break;
+        }
+    } while (invalid);
 }
