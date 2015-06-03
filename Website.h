@@ -1,0 +1,78 @@
+
+#ifndef __TeamProject__Website__
+#define __TeamProject__Website__
+
+#include <stdio.h>
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+class Website
+{
+private:
+    string name;                        //the name of the website
+    string nationality;                 //the nationality of the server
+    unsigned int global_rank;           //the global rank by the amount of visitor per day
+    unsigned int Avg_dailyTime_onSite;            //the average time that user stay in the website
+    string owner;                     //the name of the company or foundation that owns this website
+    float Avg_dailyView_perVisitor;       //the average daily view per visitor
+public:
+    //constructor
+    
+    //setters
+    void setName(string str){name = str;}
+    void setNationality(string str){nationality = str;}
+    void setGlobalRank(unsigned int num){global_rank = num;}
+    void setAvgTime_OnSite(int time){Avg_dailyTime_onSite = time;}
+    void setOwner(string str){owner = str;}
+    void setAvgview_perVisitor(float num){Avg_dailyView_perVisitor = num;}
+    
+    //getters
+    string getName() const {return name;}
+    string getNationality() const {return nationality;}
+    unsigned int getGlobalRank() const {return global_rank;}
+    int getAvgTime_OnSite() const {return Avg_dailyTime_onSite;}
+    string getOwner()const {return owner;}
+    float getAvgview_perVisitor() const { return Avg_dailyView_perVisitor;}
+    
+    Website operator = (const Website& right){
+        this->name = right.getName();
+        this->nationality = right.getNationality();
+        this->global_rank = right.getGlobalRank();
+        this->Avg_dailyTime_onSite = right.getAvgTime_OnSite();
+        this->owner = right.getOwner();
+        this->Avg_dailyView_perVisitor = right.getAvgview_perVisitor();
+        return *this;
+    }
+    
+    bool operator > (const Website& right) const{
+        return (this->name > right.getName() ? true: false);
+    }
+    
+    bool operator < (const Website& right) const{
+        return (this->name < right.getName() ? true: false);
+    }
+    
+    bool operator == (const Website& right) const{
+        return (this->name == right.getName() ? true: false);
+    }
+    
+    bool operator >= (const Website& right) const{
+        return (this->name >= right.getName() ? true: false);
+    }
+    
+    bool operator <= (const Website& right) const{
+        return (this->name <= right.getName() ? true: false);
+    }
+    
+    friend ostream& operator << (ostream& os, const Website& web) {
+        os << web.getName() << " " << web.getNationality() << " "
+        << web.getGlobalRank() << " " << web.getAvgTime_OnSite() << " "
+        << web.getOwner() << " " << web.getAvgview_perVisitor() << endl;
+        return os;
+    }
+};
+
+
+#endif
