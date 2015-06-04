@@ -1,7 +1,7 @@
 
 
-#ifndef __TeamProject__BinarySearch__
-#define __TeamProject__BinarySearch__
+#ifndef __TeamProject__BinarySearchTree__
+#define __TeamProject__BinarySearchTree__
 
 #include <stdio.h>
 #include "BinaryTree.h"

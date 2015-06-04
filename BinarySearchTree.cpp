@@ -1,5 +1,5 @@
 
-#include "BinarySearch.h"
+#include "BinarySearchTree.h"
 
 
 ///////////////////////// public function definitions ///////////////////////////

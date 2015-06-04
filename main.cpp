@@ -2,17 +2,19 @@
 #include <ctime>
 #include <fstream>
 #include <string>
-#include "BinarySearch.h"
 
 using namespace std;
 
+/*
 bool readFile(BinarySearchTree*);
 void caseList();
 void caseSearch();
 void searchManager(BinarySearchTree*);
+ */
 
 int main()
 {
+   /*
     BinarySearchTree* treePtr = new BinarySearchTree;
     
     if(!readFile(treePtr)){
@@ -22,10 +24,12 @@ int main()
     searchManager(treePtr);
    
     delete treePtr;
+    */
     
     return 0;
 }
 
+/*
 bool readFile(BinarySearchTree* treePtr){
     ifstream input("websiteData.txt");
     if (input.fail()){
@@ -35,7 +39,6 @@ bool readFile(BinarySearchTree* treePtr){
     
     string holdData;
     int numOfData = 0;
-    /*********************************/
     
 
     getline(input, holdData);
@@ -177,3 +180,4 @@ void caseList()
         }
     } while (invalid);
 }
+ */
