@@ -11,13 +11,6 @@ void caseList();
 void caseSearch();
 void searchManager(BinarySearchTree*);
 
-void display( Website& web)
-{
-    cout << web.getName() << " " << web.getNationality() << " "
-    << web.getGlobalRank() << " " << web.getAvgTime_OnSite() << " "
-    << web.getOwner() << " " << web.getAvgview_perVisitor() << endl;
-}
-
 int main()
 {
     BinarySearchTree* treePtr = new BinarySearchTree;
