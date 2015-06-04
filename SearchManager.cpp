@@ -7,7 +7,7 @@ Team 10 Project
 
 #include "SearchManager.h"
 
-void searchManager()
+void SearchManager::run()
 {
 	char choice;
 	bool quit = false;
@@ -44,7 +44,7 @@ void searchManager()
 	} while (!quit);
 }
 
-void caseSearch()
+void SearchManager::caseSearch()
 {
 	char subChoice;
 	bool invalid;
@@ -75,7 +75,7 @@ void caseSearch()
 	} while (invalid);
 }
 
-void caseList()
+void SearchManager::caseList()
 {
 	int subChoice;
 	bool invalid;
