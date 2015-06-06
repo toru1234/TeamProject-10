@@ -2,29 +2,18 @@
 #include <ctime>
 #include <fstream>
 #include <string>
+#include "RunOption.h"
 
 using namespace std;
 
-/*
-bool readFile(BinarySearchTree*);
-void caseList();
-void caseSearch();
-void searchManager(BinarySearchTree*);
- */
+
 
 int main()
 {
-   /*
-    BinarySearchTree* treePtr = new BinarySearchTree;
-    
-    if(!readFile(treePtr)){
-        return 1;
-    }
-    
-    searchManager(treePtr);
+   string inputFileName = "/Users/TingtingWang/Downloads/websiteData (1).txt";
+   RunOption RunOption(inputFileName);
+   RunOption.run();
    
-    delete treePtr;
-    */
     
     return 0;
 }
