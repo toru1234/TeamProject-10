@@ -2,22 +2,33 @@
 #include "BinarySearchTree.h"
 
 
+
 ///////////////////////// public function definitions ///////////////////////////
 
-bool BinarySearchTree::insert(const Website & newEntry)
+bool BinarySearchTree::insertUniqueTree(const Website & newEntry)
 {
     BinaryNode* newNodePtr = new BinaryNode(newEntry);
-    this->rootPtr = _insert(this->rootPtr, newNodePtr);
+    this->rootPtr = _insertUniqueTree(this->rootPtr, newNodePtr);
+    // increament count
+    this->count ++;
+    return true;
+}
+
+bool BinarySearchTree::insertSecondaryTree(const Website & newEntry)
+{
+    BinaryNode* newNodePtr = new BinaryNode(newEntry);
+    this->rootPtr = _insertSecondaryTree(this->rootPtr, newNodePtr);
     // increament count
     this->count ++;
     return true;
 }
 
 
-bool BinarySearchTree::remove(const Website & target)
+
+bool BinarySearchTree::removeUniqueTree(const Website & target)
 {
     bool isSuccessful = false;
-    this->rootPtr = _remove(this->rootPtr, target, isSuccessful);
+    this->rootPtr = _removeUniqueKey(this->rootPtr, target, isSuccessful);
     // drcrease count
     if (isSuccessful)
     {
@@ -27,16 +38,16 @@ bool BinarySearchTree::remove(const Website & target)
 }
 
 
-bool BinarySearchTree::getEntry(const Website& anEntry, Website & returnedItem) const
+bool BinarySearchTree::getUniqueTreeEntry(const Website& anEntry, Website & returnedItem) const
 {
     // check if the entry is valid
-    if (findNode(this->rootPtr, anEntry) == 0)
+    if (findUniqueNode(this->rootPtr, anEntry) == 0)
     {
         return false;
     }
     else
     {
-        returnedItem = findNode(this->rootPtr, anEntry)->getWebsite();
+        returnedItem = findUniqueNode(this->rootPtr, anEntry)->getWebsite();
         return true;
     }
 }
@@ -45,8 +56,8 @@ bool BinarySearchTree::getEntry(const Website& anEntry, Website & returnedItem) 
 
 //////////////////////////// private functions ////////////////////////////////////////////
 
-BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr,
-                                                          BinaryNode* newNodePtr)
+BinaryNode* BinarySearchTree::_insertUniqueTree(BinaryNode* nodePtr,
+                                      BinaryNode* newNodePtr)
 {
     // if there is no node at all
     if (nodePtr == 0)
@@ -57,20 +68,42 @@ BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr,
     // insert smaller
     if(newNodePtr->getWebsite() < nodePtr->getWebsite())
     {
-        nodePtr->setLeftPtr(_insert(nodePtr->getLeftPtr(), newNodePtr));
+        nodePtr->setLeftPtr(_insertUniqueTree(nodePtr->getLeftPtr(), newNodePtr));
     }
     // If there is node, insert bigger(equal)
     else
     {
-        nodePtr->setRightPtr(_insert(nodePtr->getRightPtr(), newNodePtr));
+        nodePtr->setRightPtr(_insertUniqueTree(nodePtr->getRightPtr(), newNodePtr));
     }
     
     return nodePtr;
 }
 
-BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr,
-                                                          const Website target,
-                                                          bool & success)
+BinaryNode* BinarySearchTree::_insertSecondaryTree(BinaryNode* nodePtr,
+                                                BinaryNode* newNodePtr)
+{
+    // if there is no node at all
+    if (nodePtr == 0)
+    {
+        nodePtr = newNodePtr;
+        return nodePtr;
+    }
+    // insert smaller
+    if(newNodePtr->getWebsite().getNationality() < nodePtr->getWebsite().getNationality())
+    {
+        nodePtr->setLeftPtr(_insertUniqueTree(nodePtr->getLeftPtr(), newNodePtr));
+    }
+    // If there is node, insert bigger(equal)
+    else
+    {
+        nodePtr->setRightPtr(_insertUniqueTree(nodePtr->getRightPtr(), newNodePtr));
+    }
+    
+    return nodePtr;
+}
+BinaryNode* BinarySearchTree::_removeUniqueKey(BinaryNode* nodePtr,
+                                      const Website target,
+                                      bool & success)
 
 {
     if (nodePtr == 0)
@@ -79,18 +112,40 @@ BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr,
         return 0;
     }
     if (nodePtr->getWebsite() > target)
-        nodePtr->setLeftPtr(_remove(nodePtr->getLeftPtr(), target, success));
+        nodePtr->setLeftPtr(_removeUniqueKey(nodePtr->getLeftPtr(), target, success));
     else if (nodePtr->getWebsite() < target)
-        nodePtr->setRightPtr(_remove(nodePtr->getRightPtr(), target, success));
+        nodePtr->setRightPtr(_removeUniqueKey(nodePtr->getRightPtr(), target, success));
     else
     {
-        nodePtr = deleteNode(nodePtr);
+        nodePtr = deleteUniqueNode(nodePtr);
         success = true;
     }
     return nodePtr;
 }
 
-BinaryNode* BinarySearchTree::deleteNode(BinaryNode* nodePtr)
+BinaryNode* BinarySearchTree::_removeSecondaryKey(BinaryNode* nodePtr,
+                                      const Website target,
+                                      bool & success)
+
+{
+    if (nodePtr == 0)
+    {
+        success = false;
+        return 0;
+    }
+    if (nodePtr->getWebsite().getNationality() > target.getNationality())
+        nodePtr->setLeftPtr(_removeSecondaryKey(nodePtr->getLeftPtr(), target, success));
+    else if (nodePtr->getWebsite() < target)
+        nodePtr->setRightPtr(_removeSecondaryKey(nodePtr->getRightPtr(), target, success));
+    else
+    {
+        nodePtr = deleteSecondaryNode(nodePtr);
+        success = true;
+    }
+    return nodePtr;
+}
+
+BinaryNode* BinarySearchTree::deleteUniqueNode(BinaryNode* nodePtr)
 {
     if (nodePtr->isLeaf())
     {
@@ -115,31 +170,77 @@ BinaryNode* BinarySearchTree::deleteNode(BinaryNode* nodePtr)
     else
     {
         Website newNodeValue;
-        nodePtr->setRightPtr(removeLeftmostNode(nodePtr->getRightPtr(), newNodeValue));
+        nodePtr->setRightPtr(removeUniqueLeftmostNode(nodePtr->getRightPtr(), newNodeValue));
+        nodePtr->setItem(newNodeValue);
+        return nodePtr;
+    }
+}
+BinaryNode* BinarySearchTree::deleteSecondaryNode(BinaryNode* nodePtr)
+{
+    if (nodePtr->isLeaf())
+    {
+        delete nodePtr;
+        nodePtr = 0;
+        return nodePtr;
+    }
+    else if (nodePtr->getLeftPtr() == 0)
+    {
+        BinaryNode* nodeToConnectPtr = nodePtr->getRightPtr();
+        delete nodePtr;
+        nodePtr = 0;
+        return nodeToConnectPtr;
+    }
+    else if (nodePtr->getRightPtr() == 0)
+    {
+        BinaryNode* nodeToConnectPtr = nodePtr->getLeftPtr();
+        delete nodePtr;
+        nodePtr = 0;
+        return nodeToConnectPtr;
+    }
+    else
+    {
+        Website newNodeValue;
+        nodePtr->setRightPtr(removeSecondaryLeftmostNode(nodePtr->getRightPtr(), newNodeValue));
         nodePtr->setItem(newNodeValue);
         return nodePtr;
     }
 }
 
-BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr,
-                                                                     Website & successor)
+BinaryNode* BinarySearchTree::removeUniqueLeftmostNode(BinaryNode* nodePtr,
+                                                 Website & successor)
 {
     if (nodePtr->getLeftPtr() == 0)
     {
         successor = nodePtr->getWebsite();
-        return deleteNode(nodePtr);
+        return deleteUniqueNode(nodePtr);
     }
     else
     {
-        nodePtr->setLeftPtr(removeLeftmostNode(nodePtr->getLeftPtr(), successor));
+        nodePtr->setLeftPtr(removeUniqueLeftmostNode(nodePtr->getLeftPtr(), successor));
         this->count--;
         return nodePtr;
     }
 }
 
 
-BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr,
-                                                           const Website & target) const
+BinaryNode* BinarySearchTree::removeSecondaryLeftmostNode(BinaryNode* nodePtr,
+                                                 Website & successor)
+{
+    if (nodePtr->getLeftPtr() == 0)
+    {
+        successor = nodePtr->getWebsite();
+        return deleteSecondaryNode(nodePtr);
+    }
+    else
+    {
+        nodePtr->setLeftPtr(removeSecondaryLeftmostNode(nodePtr->getLeftPtr(), successor));
+        this->count--;
+        return nodePtr;
+    }
+}
+
+BinaryNode* BinarySearchTree::findUniqueNode(BinaryNode* nodePtr,
+                                       const Website & target) const
 {
     // tree is empty
     if (nodePtr == 0)
@@ -151,11 +252,33 @@ BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr,
     // Iterate through the tree
     else if (nodePtr->getWebsite() > target)
     {
-        return findNode(nodePtr->getLeftPtr(), target);
+        return findUniqueNode(nodePtr->getLeftPtr(), target);
     }
     else if (nodePtr->getWebsite() < target)
     {
-        return findNode(nodePtr->getRightPtr(), target);
+        return findUniqueNode(nodePtr->getRightPtr(), target);
+    }
+    return nodePtr;
+}
+
+BinaryNode* BinarySearchTree::findSecondaryNode(BinaryNode* nodePtr,
+                                       const Website & target) const
+{
+    // tree is empty
+    if (nodePtr == 0)
+    {
+        return 0;
+    }
+    
+    // tree is not empty
+    // Iterate through the tree
+    else if (nodePtr->getWebsite().getNationality() > target.getNationality())
+    {
+        return findSecondaryNode(nodePtr->getLeftPtr(), target);
+    }
+    else if (nodePtr->getWebsite().getNationality() < target.getNationality())
+    {
+        return findSecondaryNode(nodePtr->getRightPtr(), target);
     }
     return nodePtr;
 }
