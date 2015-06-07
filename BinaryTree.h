@@ -33,6 +33,7 @@ public:
     void bfsOrder(void visit(Website &)) const;
     void indented() const {_printTreeIndented(rootPtr, 1);}
     bool searchInRange(const Website & minVal, const Website & maxVal);
+    int getCount(){return count;}
     
     
     

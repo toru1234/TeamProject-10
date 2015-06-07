@@ -14,10 +14,11 @@ using namespace std;
 class RunOption
 {
 private:
-   Website* firstNode;
-   BinarySearchTree* tree;
-   bool readFile(string fileName);
-   Website* buildTreeNodeArr(string fileName);
+   string fileName;
+   BinarySearchTree* uniqueTree;
+   BinarySearchTree* secondaryKeyTree;
+   vector<Website> treeVector;
+   vector<Website> buildTreeNodeArr();
    void caseSearch();
    void caseList();
    void caseAdd();
@@ -26,18 +27,19 @@ private:
    void caseStatistic();
 public:
    // default consturctor
-   RunOption(){tree = 0;}
+   RunOption(){uniqueTree = 0; secondaryKeyTree = 0; fileName = "";}
    
    // constructor
-   RunOption(string fileName){firstNode = buildTreeNodeArr(fileName);}
+   RunOption(string inputFileName){uniqueTree = new BinarySearchTree; secondaryKeyTree = new BinarySearchTree; fileName = inputFileName;}
    
    // build binary unique key tree
-    void buildUniqueKeyTree();
+   bool buildUniqueKeyTree();
+   
    // build secondary key tree;
    void buildSecondaryKeyTree();
    
    // Destructor. Calls tree delete.
-   ~RunOption(){tree->clear(); delete tree;}
+   ~RunOption(){uniqueTree->clear(); delete uniqueTree;}
    
    // Runs the main functionality of RunOption
    void run();
