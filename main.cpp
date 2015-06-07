@@ -11,8 +11,8 @@ using namespace std;
 int main()
 {
    string inputFileName = "/Users/TingtingWang/Downloads/websiteData (1).txt";
-   RunOption RunOption(inputFileName);
-   RunOption.run();
+   RunOption runOption(inputFileName);
+   runOption.run();
    
     
     return 0;

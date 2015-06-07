@@ -18,8 +18,6 @@ private:
     string owner;                     //the name of the company or foundation that owns this website
     float Avg_dailyView_perVisitor;       //the average daily view per visitor
 public:
-    //constructor(default)
-   
    // constructor with arguments
    Website(string name = "", string nationality = "", unsigned int global = 0, unsigned int time = 0, string owner = "", float visitor = 0.0)
    {
@@ -30,6 +28,7 @@ public:
       this->owner = owner;
       this->Avg_dailyView_perVisitor = visitor;
    }
+ 
     //setters
     void setName(string str){name = str;}
     void setNationality(string str){nationality = str;}
