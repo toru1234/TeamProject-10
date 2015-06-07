@@ -1,4 +1,3 @@
-
 #ifndef __TeamProject__BinaryTree__
 #define __TeamProject__BinaryTree__
 
@@ -33,14 +32,16 @@ public:
     void bfsOrder(void visit(Website &)) const;
     void indented() const {_printTreeIndented(rootPtr, 1);}
     bool searchInRange(const Website & minVal, const Website & maxVal);
-    int getCount(){return count;}
     
     
     
     // abstract functions to be implemented by derived class
-    virtual bool insert(const Website & newData) = 0;
-    virtual bool remove(const Website & data) = 0;
-    virtual bool getEntry(const Website & anEntry, Website & returnedItem) const = 0;
+    virtual bool insertUniqueTree(const Website & newData) = 0;
+    virtual bool removeUniqueTree(const Website & data) = 0;
+    virtual bool getUniqueTreeEntry(const Website & anEntry, Website & returnedItem) const = 0;
+    virtual bool insertSecondaryTree(const Website & newData) = 0;
+    virtual bool removeSecondaryTree(const Website & data) = 0;
+    virtual bool getSecondaryTreeEntry(const Website & anEntry, Website & returnedItem) const = 0;
     BinaryNode* searchInRange(const Website & minRange, const Website & maxRange) const;
     
 private:
@@ -60,6 +61,4 @@ private:
     void _postorder(void visit(Website &), BinaryNode* nodePtr) const;
     void _printTreeIndented(BinaryNode* nodePtr, int depth) const;
     
-}; 
-
-#endif
+};
