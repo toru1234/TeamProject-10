@@ -116,7 +116,7 @@ void RunOption::caseDelete()
    cout << "Do you want to remove the data by name or nationality? N for name, T for nationality:";
    char deleteChoice;
    cin >> deleteChoice;
-   if (toupper(deleteChoice == 'N'))
+   if (toupper(deleteChoice) == 'N')
    {
       cout << "Please enter the name of the website:";
       string deleteWebName;
@@ -126,7 +126,7 @@ void RunOption::caseDelete()
       cout << "Delete done!" << endl;
    }
    
-   else if (toupper(deleteChoice == 'T'))
+   else if (toupper(deleteChoice) == 'T')
    {
       // TODO:***************delete function for the secondary key
       cout << "Delete done!" << endl;
@@ -168,7 +168,7 @@ void RunOption::caseWriteFile()
       cout << "Out put file Web_Data_Out.txt done!" << endl;
       // unique tree
    }
-   else if (toupper(writeFileChar == 'T'))
+   else if (toupper(writeFileChar) == 'T')
    {
       // Open output file
       ofstream outputFile;
