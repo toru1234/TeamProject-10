@@ -2,7 +2,6 @@
 // funtion declarition for RunOption.h
 
 #include "RunOption.h"
-#include "Hash_Table.h"
 #include <cstdlib>
 
 
@@ -18,6 +17,10 @@ void RunOption::run()
    vector<Website> webVector;
    webVector = buildTreeNodeArr();
    buildUniqueKeyTree();
+
+   hashTable = getData(hashTable);
+   hashTable->PrintTable();
+
    char choice;
    bool quit = false;
 
@@ -287,7 +290,61 @@ void RunOption::caseList()
 
    run();
 }
+/**********************
+HashTable getData function
+initialize the size of the hash table
+and read the data from the file
+**********************/
+Hash_Table* RunOption::getData(Hash_Table *hashtable)
+{
+    ifstream input("websiteData.txt");
+    if(input.fail())
+    {
+        cout << "Cannot open websiteData.txt!" << endl;
+        exit(EXIT_FAILURE);
+    }
 
+    int numOfData;
+    input >> numOfData;
+    input.ignore();
+
+    //multiply the size of array by 2, and find the next prime number
+    //this gonna be in a seperate function
+    //there are 8 lines for each website
+    //....
+
+    //allocate the hashtable, size is 30 for now, with bucket size of 3
+    hashtable = new Hash_Table(30,3);
+
+    string holdData;
+
+   for(int i = 0; i < numOfData; i++)
+   {
+        //get the name of the website
+      Website webNode;
+      getline(input, holdData);
+      webNode.setName(holdData);
+
+        //get the nationality of the website
+      getline(input, holdData);
+      webNode.setNationality(holdData);
+        //get the globalrank of the website
+      getline(input, holdData);
+      webNode.setGlobalRank(atoi(holdData.data()));
+        //get the average time that visitor on the website
+      getline(input, holdData);
+      webNode.setAvgTime_OnSite(atoi(holdData.data()));
+        //get the owner of the website
+      getline(input, holdData);
+      webNode.setOwner(holdData);
+        //get hte average amount of pages viewed by a visitor per day
+      getline(input, holdData);
+      webNode.setAvgview_perVisitor(atof(holdData.data()));
+
+      hashtable->insert(webNode);
+      getline(input, holdData);
+   }
+}
 
 vector<Website> RunOption::buildTreeNodeArr()
 {
@@ -308,7 +365,6 @@ vector<Website> RunOption::buildTreeNodeArr()
    int index = 0;
 
    Website webNode;
-   Hash_Table hashTable(30,3);
    while (index < numOfData)
    {
 
@@ -330,12 +386,10 @@ vector<Website> RunOption::buildTreeNodeArr()
       getline(input, holdData);
       webNode.setAvgview_perVisitor(atof(holdData.data()));
       v.push_back(webNode);
-      hashTable.insert(webNode);
       getline(input, holdData);
       index++;
 
    }
-   hashTable.PrintTable();
    return v;
 }
 

@@ -31,6 +31,16 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="BinaryNode.h" />
+		<Unit filename="BinarySearchTree.cpp" />
+		<Unit filename="BinarySearchTree.h" />
+		<Unit filename="BinaryTree.cpp" />
+		<Unit filename="BinaryTree.h" />
+		<Unit filename="Hash_Table.cpp" />
+		<Unit filename="Hash_Table.h" />
+		<Unit filename="RunOption.cpp" />
+		<Unit filename="RunOption.h" />
+		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
