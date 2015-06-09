@@ -10,11 +10,11 @@ using namespace std;
 
 int main()
 {
-   string inputFileName = "/Users/TingtingWang/Downloads/websiteData (1).txt";
+   string inputFileName = "websiteData.txt";
    RunOption runOption(inputFileName);
    runOption.run();
-   
-    
+
+
     return 0;
 }
 
@@ -25,44 +25,44 @@ bool readFile(BinarySearchTree* treePtr){
         cout << "the file didn't open successfully";
         return false;
     }
-    
+
     string holdData;
     int numOfData = 0;
-    
+
 
     getline(input, holdData);
     numOfData = atoi(holdData.data());
-    
+
     int index = 0;
-    
+
     Website web1;
     while (index < numOfData){
-        
+
         getline(input, holdData);
         web1.setName(holdData);
-        
+
         getline(input, holdData);
         web1.setNationality(holdData);
-        
+
         getline(input, holdData);
         web1.setGlobalRank(atoi(holdData.data()));
-        
+
         getline(input, holdData);
         web1.setAvgTime_OnSite(atoi(holdData.data()));
-        
+
         getline(input, holdData);
         web1.setOwner(holdData);
-        
+
         getline(input, holdData);
         web1.setAvgview_perVisitor(atof(holdData.data()));
-        
+
         treePtr->insert(web1);
-        
+
         getline(input, holdData);
         index++;
-        
+
     }
-    
+
     return true;
 }
 
@@ -70,7 +70,7 @@ void searchManager(BinarySearchTree* treePtr)
 {
     char choice;
     bool quit = false;
-    
+
     do {
         cout << "Please input the letter corresponding to the function you'd like to use from the list below.\n" << endl;
         cout << "A - Add New Website\n"
@@ -81,7 +81,7 @@ void searchManager(BinarySearchTree* treePtr)
         cin >> choice;
         choice = toupper(choice);
         cout << endl;
-        
+
         switch (choice)
         {
             case 'A': // add
@@ -107,7 +107,7 @@ void caseSearch()
 {
     char subChoice;
     bool invalid;
-    
+
     do {
         invalid = false;
         cout << "Please select a search type from the options below.\n" << endl
@@ -117,7 +117,7 @@ void caseSearch()
         cin >> subChoice;
         subChoice = toupper(subChoice);
         cout << endl;
-        
+
         switch (subChoice)
         {
             case 'N': // domain name
@@ -138,7 +138,7 @@ void caseList()
 {
     int subChoice;
     bool invalid = false;
-    
+
     do {
         cout << "Please select how to display the website data from the options below.\n" << endl;
         cout << "U - display unsorted\n"
@@ -149,7 +149,7 @@ void caseList()
         cin >> subChoice;
         subChoice = toupper(subChoice);
         cout << endl;
-        
+
         switch (subChoice)
         {
             case 'U': // unsorted
@@ -162,7 +162,7 @@ void caseList()
                 break;
             case 'R': // previous
                 return;
-            default: 
+            default:
                 invalid = true;
                 cout << "Invalid input. ";
                 break;
