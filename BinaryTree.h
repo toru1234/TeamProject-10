@@ -15,6 +15,7 @@ protected:
 public:
     // "admin" functions
     BinaryTree() {rootPtr = 0; count = 0;}
+   
     // copy constructor
     BinaryTree(const BinaryTree & tree);
     virtual ~BinaryTree() { }
@@ -38,8 +39,8 @@ public:
     
     
     // abstract functions to be implemented by derived class
-    virtual bool insert(const Website & newData) = 0;
-    virtual bool remove(const Website & data) = 0;
+    virtual bool insert(const string inputString, const Website & newData) = 0;
+    virtual bool remove(const string key) = 0;
     virtual bool getEntry(const Website & anEntry, Website & returnedItem) const = 0;
     BinaryNode* searchInRange(const Website & minRange, const Website & maxRange) const;
     
@@ -53,10 +54,7 @@ private:
     // internal traverse
     void _preorder(void visit(Website &), BinaryNode* nodePtr) const;
     void _inorder(void visit(Website &), BinaryNode* nodePtr) const;
-    void _inorder(void visit(Website &),
-                  BinaryNode* nodePtr,
-                  const Website & minItem,
-                  const Website & maxItem) const;
+    void _inorder(void visit(Website &), BinaryNode* nodePtr, const Website & minItem, const Website & maxItem) const;
     void _postorder(void visit(Website &), BinaryNode* nodePtr) const;
     void _printTreeIndented(BinaryNode* nodePtr, int depth) const;
     

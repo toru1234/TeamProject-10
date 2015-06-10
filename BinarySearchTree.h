@@ -9,11 +9,11 @@
 class BinarySearchTree : public BinaryTree
 {
 private:
-    // internal insert node: insert newNode in nodePtr subtree
+    // internal insert node: insert newNode in nodePtr subtree according to the key.
     BinaryNode* _insert(BinaryNode* nodePtr, BinaryNode* newNode);
     
     // internal remove node: locate and delete target node under nodePtr subtree
-    BinaryNode* _remove(BinaryNode* nodePtr, const Website target, bool & success);
+    BinaryNode* _remove(BinaryNode* nodePtr, const string key, bool & success);
     
     // delete target node from tree, called by internal remove node
     BinaryNode* deleteNode(BinaryNode* targetNodePtr);
@@ -27,10 +27,12 @@ private:
     
     
 public:
-    // insert a node at the correct location
-    bool insert(const Website & newEntry);
+    // insert a node at the correct location by the key reference
+    bool insert(string key, const Website & newEntry);
     // remove a node if found
-    bool remove(const Website & anEntry);
+    bool remove(const string key);
+    // remove function to call remove one node, for the case when several nodes need to be removed
+    void removeAll(const string key);
     // find a target node
     bool getEntry(const Website & target, Website & returnedItem) const;
     // print largest item

@@ -4,9 +4,10 @@
 
 ///////////////////////// public function definitions ///////////////////////////
 
-bool BinarySearchTree::insert(const Website & newEntry)
+bool BinarySearchTree::insert(string key, const Website & newEntry)
 {
     BinaryNode* newNodePtr = new BinaryNode(newEntry);
+    newNodePtr->setKey(key);
     this->rootPtr = _insert(this->rootPtr, newNodePtr);
     // increament count
     this->count ++;
@@ -14,10 +15,10 @@ bool BinarySearchTree::insert(const Website & newEntry)
 }
 
 
-bool BinarySearchTree::remove(const Website & target)
+bool BinarySearchTree::remove(const string key)
 {
     bool isSuccessful = false;
-    this->rootPtr = _remove(this->rootPtr, target, isSuccessful);
+    this->rootPtr = _remove(this->rootPtr, key, isSuccessful);
     // drcrease count
     if (isSuccessful)
     {
@@ -26,6 +27,14 @@ bool BinarySearchTree::remove(const Website & target)
     return isSuccessful;
 }
 
+void BinarySearchTree::removeAll(const string key)
+{
+   if (remove(key))
+   {
+      remove(key);
+   }
+   
+}
 
 bool BinarySearchTree::getEntry(const Website& anEntry, Website & returnedItem) const
 {
@@ -45,8 +54,7 @@ bool BinarySearchTree::getEntry(const Website& anEntry, Website & returnedItem) 
 
 //////////////////////////// private functions ////////////////////////////////////////////
 
-BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr,
-                                                          BinaryNode* newNodePtr)
+BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr, BinaryNode* newNodePtr)
 {
     // if there is no node at all
     if (nodePtr == 0)
@@ -55,7 +63,7 @@ BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr,
         return nodePtr;
     }
     // insert smaller
-    if(newNodePtr->getWebsite() < nodePtr->getWebsite())
+    if(newNodePtr->getKey() < nodePtr->getKey())
     {
         nodePtr->setLeftPtr(_insert(nodePtr->getLeftPtr(), newNodePtr));
     }
@@ -68,20 +76,17 @@ BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr,
     return nodePtr;
 }
 
-BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr,
-                                                          const Website target,
-                                                          bool & success)
-
+BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr, const string key, bool & success)
 {
     if (nodePtr == 0)
     {
         success = false;
         return 0;
     }
-    if (nodePtr->getWebsite() > target)
-        nodePtr->setLeftPtr(_remove(nodePtr->getLeftPtr(), target, success));
-    else if (nodePtr->getWebsite() < target)
-        nodePtr->setRightPtr(_remove(nodePtr->getRightPtr(), target, success));
+    if (nodePtr->getKey() > key)
+        nodePtr->setLeftPtr(_remove(nodePtr->getLeftPtr(), key, success));
+    else if (nodePtr->getKey() < key)
+        nodePtr->setRightPtr(_remove(nodePtr->getRightPtr(), key, success));
     else
     {
         nodePtr = deleteNode(nodePtr);
@@ -121,8 +126,7 @@ BinaryNode* BinarySearchTree::deleteNode(BinaryNode* nodePtr)
     }
 }
 
-BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr,
-                                                                     Website & successor)
+BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr, Website & successor)
 {
     if (nodePtr->getLeftPtr() == 0)
     {
@@ -138,8 +142,7 @@ BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr,
 }
 
 
-BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr,
-                                                           const Website & target) const
+BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr, const Website & target) const
 {
     // tree is empty
     if (nodePtr == 0)

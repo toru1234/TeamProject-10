@@ -1,27 +1,38 @@
 
-// funtion declarition for RunOption.h
+/*********************************
+funtion declarition for RunOption.
+**********************************/
 
 #include "RunOption.h"
+#include <cstdlib>
 
-
-
-// diaplay function, will be passed in parameter.
+/************************************************
+ diaplay function, will be passed in parameter.
+*************************************************/
 void display(const Website& web)
 {
    cout << web << endl;
 }
 
-// main function for runOption. It will display the menu and build trees and hash table.
+/************************************************
+ main function for runOption.
+It will display the menu and build trees and hash table.
+*************************************************/
 void RunOption::run()
 {
-   vector<Website> webVector;
-   webVector = buildTreeNodeArr();
-   buildUniqueKeyTree();
+   // build the hash table off the input file
+   hashTable = getData(hashTable);
+   
+   // build trees
+   uniqueTree = new BinarySearchTree;
+   secondaryKeyTree = new BinarySearchTree;
+   buildTrees(hashTable);
+   
    char choice;
    bool quit = false;
+   cout << "Welcome! Our program is about the popular websites all around the world." << endl;
    
    do {
-      cout << "Welcome! Our program is about the popular websited all around the world." << endl;
       cout << "Please input the letter corresponding to the function you'd like to use from the list below." << endl;
       cout << "A - Add New Website\n"
       << "D - Delete Website\n"
@@ -30,11 +41,11 @@ void RunOption::run()
       << "W - Write data into file\n"
       << "H - Statistics\n"
       << "Q - Quit\n"<< endl;
-      
+
       cin >> choice;
       choice = toupper(choice);
       cout << endl;
-      
+
       switch (choice)
       {
          case 'A': // add
@@ -62,20 +73,35 @@ void RunOption::run()
             cout << "Invalid input.\n";
       }
    } while (!quit);
-   
+
    if (choice == 'Q')
    {
-      cout << "Thank you for using our program." << endl;
+      cout << "Thank you for using our program. Have a nice day!" << endl;
    }
 }
 
-// functionality for menu driven function.
+/*************************************************
+// build trees functions, passed the hash table in.
+*************************************************/
+void RunOption::buildTrees(Hash_Table* hashTable)
+{
+   Website* hashTableItem;
+   for (int i = 0; i < hashTable->getTableSize(); ++i)
+   {
+      for (int j = 0; j < hashTable->getBucketSize(); ++i)
+      {
+         hashTableItem = hashTable->getHashItem(i, j);
+         uniqueTree->insert(hashTableItem->getName(), *hashTableItem);
+         secondaryKeyTree->insert(hashTableItem->getNationality(), *hashTableItem);
+      }
+   }
+}
+
+/*************************************************
+functionality for menu driven function.
+*************************************************/
 void RunOption::caseAdd()
 {
-   // insert to the vector
-   
-
-   // call tree insert function
    cout << "Please enter the name of the website that you want to add:";
    string newWebString;
    cin >> newWebString;
@@ -95,21 +121,27 @@ void RunOption::caseAdd()
    cout << "Please neter the average daily view per visitor(round it to one decimal place):";
    float newDailyViewString;
    cin >> newDailyViewString;
-   
+
    Website addWebsite(newWebString, newCopuntryString, newRankString, newSpendTimeString, newCompanyNameString, newDailyViewString);
-   
-   uniqueTree->insert(addWebsite);
-   treeVector.push_back(addWebsite);
 
+   // insert to the hash table
+   hashTable->insert(addWebsite);
+   
+   // insert to the unique tree
+   uniqueTree->insert(newWebString, addWebsite);
+   
+   // insert to secondary tree
+   secondaryKeyTree->insert(newCopuntryString, addWebsite);
    cout << "Inserting done!" << endl;
-
-   // TODO: use the second tree to do add fuction.
-   
    
    // call run fuction again
    run();
-   
+
 }
+
+/*************************************************
+ functionality for delete case.
+*************************************************/
 void RunOption::caseDelete()
 {
    // call tree delete function
@@ -121,32 +153,44 @@ void RunOption::caseDelete()
       cout << "Please enter the name of the website:";
       string deleteWebName;
       cin >> deleteWebName;
-      Website deleteWeb(deleteWebName);
-      uniqueTree->remove(deleteWeb);
+      Website deleteWeb;
+      uniqueTree->removeAll(deleteWebName);
       cout << "Delete done!" << endl;
    }
-   
+
    else if (toupper(deleteChoice == 'T'))
    {
-      // TODO:***************delete function for the secondary key
+      cout << "Please enter the nationality of the website:";
+      string deleteWebNationality;
+      cin >> deleteWebNationality;
+      Website deleteWeb(deleteWebNationality);
+      secondaryKeyTree->removeAll(deleteWebNationality);
+
       cout << "Delete done!" << endl;
    }
-   
+
    else
    {
       cout << "Invalid input!" << endl;
-      run();
    }
-   
+
    run();
 }
+
+/*************************************************
+ functionality for statistic case.
+ *************************************************/
 void RunOption::caseStatistic()
 {
-   // hash
+   hashTable->showStatistics();
+   
    // call run fuction again
+   run();
 }
 
-// save the tree into output file
+/*************************************************
+save the tree into output file
+*************************************************/
 void RunOption::caseWriteFile()
 {
    cout << "Do you want ot write the file by its name or nationality? N for name and T for nationality:";
@@ -163,7 +207,7 @@ void RunOption::caseWriteFile()
          cout <<"Error opening out put file!" << endl;
          return;
       }
-      
+
    // write output file***********************TODO:
       cout << "Out put file Web_Data_Out.txt done!" << endl;
       // unique tree
@@ -179,7 +223,7 @@ void RunOption::caseWriteFile()
          cout <<"Error opening out put file!" << endl;
          return;
       }
-      
+
       // secondary tree *****************TODO:
       cout << "Out put file Web_Data_Out.txt done!" << endl;
 
@@ -190,11 +234,17 @@ void RunOption::caseWriteFile()
    }
    run();
 }
+
+/*************************************************
+ Functionality for case search
+*************************************************/
 void RunOption::caseSearch()
 {
+   
+   // use hash table to search, faster.
    char subChoice;
    bool invalid;
-   
+
    do {
       invalid = false;
       cout << "Please select a search type from the options below.\n" << endl
@@ -204,7 +254,7 @@ void RunOption::caseSearch()
       cin >> subChoice;
       subChoice = toupper(subChoice);
       cout << endl;
-      
+
       switch (subChoice)
       {
          case 'N': // domain name
@@ -235,15 +285,18 @@ void RunOption::caseSearch()
             break;
       }
    } while (invalid);
-   
+
    run();
 }
 
+/*************************************************
+ Functionality for case list
+*************************************************/
 void RunOption::caseList()
 {
    char subChoice;
    bool invalid;
-   
+
    do {
       invalid = false;
       cout << "Please select how to display the website data from the options below.\n" << endl;
@@ -255,7 +308,7 @@ void RunOption::caseList()
       cin >> subChoice;
       subChoice = toupper(subChoice);
       cout << endl;
-      
+
       switch (subChoice)
       {
          case 'U': // unsorted
@@ -283,79 +336,63 @@ void RunOption::caseList()
             break;
       }
    } while (invalid);
-   
+
    run();
 }
 
-
-vector<Website> RunOption::buildTreeNodeArr()
+/*************************************************
+HashTable getData function initialize the size of 
+the hash table and read the data from the file.
+*************************************************/
+Hash_Table* RunOption::getData(Hash_Table *hashtable)
 {
-   vector<Website> v;
-   // ******************************TODO: change it back!!!!!
-   ifstream input("/Users/TingtingWang/Downloads/websiteData (1).txt");
-   if (input.fail())
+   // TODO**************************change name back
+    ifstream input("/Users/TingtingWang/Documents/TeamProject-10/websiteData.txt");
+    if(input.fail())
+    {
+        cout << "Cannot open websiteData.txt!" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    int numOfData;
+    input >> numOfData;
+    input.ignore();
+
+    //multiply the size of array by 2, and find the next prime number
+    //this gonna be in a seperate function
+    //there are 8 lines for each website
+    //....
+
+    //allocate the hashtable, size is 30 for now, with bucket size of 3
+    hashtable = new Hash_Table(30,3);
+
+    string holdData;
+
+   for(int i = 0; i < numOfData; i++)
    {
-      cout << "Error opening file!";
-   }
-   
-   string holdData;
-   int numOfData = 0;
-   
-   
-   getline(input, holdData);
-   numOfData = atoi(holdData.data());
-   
-   int index = 0;
-   
-   Website webNode;
-   while (index < numOfData)
-   {
-      
+        //get the name of the website
+      Website webNode;
       getline(input, holdData);
       webNode.setName(holdData);
-      
+
+        //get the nationality of the website
       getline(input, holdData);
       webNode.setNationality(holdData);
-      
+        //get the globalrank of the website
       getline(input, holdData);
       webNode.setGlobalRank(atoi(holdData.data()));
-      
+        //get the average time that visitor on the website
       getline(input, holdData);
       webNode.setAvgTime_OnSite(atoi(holdData.data()));
-      
+        //get the owner of the website
       getline(input, holdData);
       webNode.setOwner(holdData);
-      
+        //get hte average amount of pages viewed by a visitor per day
       getline(input, holdData);
       webNode.setAvgview_perVisitor(atof(holdData.data()));
-      v.push_back(webNode);
+
+      hashtable->insert(webNode);
       getline(input, holdData);
-      index++;
-      
    }
-   return v;
+   return hashtable;
 }
-
-bool RunOption::buildUniqueKeyTree()
-{
-   if (treeVector.empty())
-   {
-      return false;
-   }
-   
-   for (int i = 0; i < treeVector.size(); i++)
-   {
-      Website currentWebsite = treeVector[i];
-      
-      // make the root pointer points to the beginning of the vector.
-      
-      uniqueTree->insert(currentWebsite);
-   }
-   return true;
-}
-
-void buildSecondaryKeyTree()
-{
-   // TODO:*****************build secondary key tree by using the node vector.
-}
-

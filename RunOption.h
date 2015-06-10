@@ -7,7 +7,7 @@
 #include <string>
 #include <fstream>
 #include "BinarySearchTree.h"
-#include <vector>
+#include "Hash_Table.h"
 
 using namespace std;
 
@@ -17,8 +17,8 @@ private:
    string fileName;
    BinarySearchTree* uniqueTree;
    BinarySearchTree* secondaryKeyTree;
-   vector<Website> treeVector;
-   vector<Website> buildTreeNodeArr();
+   Hash_Table* hashTable;
+   Hash_Table* getData(Hash_Table*);
    void caseSearch();
    void caseList();
    void caseAdd();
@@ -28,19 +28,16 @@ private:
 public:
    // default consturctor
    RunOption(){uniqueTree = 0; secondaryKeyTree = 0; fileName = "";}
-   
+
    // constructor
-   RunOption(string inputFileName){uniqueTree = new BinarySearchTree; secondaryKeyTree = new BinarySearchTree; fileName = inputFileName;}
-   
-   // build binary unique key tree
-   bool buildUniqueKeyTree();
-   
-   // build secondary key tree;
-   void buildSecondaryKeyTree();
-   
+   RunOption(string inputFileName){uniqueTree = 0; secondaryKeyTree = 0; fileName = inputFileName;}
+
+   // build binary unique key and secondary key tree
+   void buildTrees(Hash_Table* hashTable);
+
    // Destructor. Calls tree delete.
-   ~RunOption(){uniqueTree->clear(); delete uniqueTree;}
-   
+   ~RunOption(){uniqueTree->clear(); delete uniqueTree;delete hashTable;}
+
    // Runs the main functionality of RunOption
    void run();
 };
