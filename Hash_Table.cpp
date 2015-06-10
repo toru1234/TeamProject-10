@@ -198,3 +198,8 @@ void Hash_Table::showStatistics() const
     cout << "Full Bucket : " << fullBuckets << endl;
     cout << "Empty Bucket: " << tablesize - load << endl;
 }
+Website* Hash_Table::getHashItem(int tableIndex, int bucketIndex) const
+{
+   return &table[tableIndex].bucket[bucketIndex];
+}
+

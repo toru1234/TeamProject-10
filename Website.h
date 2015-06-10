@@ -54,7 +54,9 @@ public:
         this->Avg_dailyView_perVisitor = right.getAvgview_perVisitor();
         return *this;
     }
-    
+   
+   
+   // TODO*************** do we need these operator? 
     bool operator > (const Website& right) const{
         return (this->name > right.getName() ? true: false);
     }

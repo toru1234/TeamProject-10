@@ -47,10 +47,14 @@ public:
 
     //get the pointer of data corresponding the key
     Website* getData(const string &strkey) const;
+    // getters for the hash size and the table size
+    int getTableSize() const {return tablesize;}
+    int getBucketSize() const {return bucketsize;}
 
     bool insert(const Website &input);
     void PrintTable() const;
     void displayList() const;
     void showStatistics() const;
+    Website* getHashItem(int tableIndex, int bucketIndex) const;
 };
 #endif // HASH_TABLE_H_INCLUDED
