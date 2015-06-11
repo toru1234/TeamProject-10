@@ -1,4 +1,4 @@
-
+#include "RunOption.h"
 /*********************************
  funtion declarition for RunOption.
  **********************************/
@@ -18,21 +18,19 @@ void display(const Website& web)
  *************************************************/
 void RunOption::run()
 {
-    // build the hash table off the input file
-    hashTable = new Hash_Table;
-    
-    if (!getData(hashTable))
-        return;
-    
+    hashTable = getData(hashTable);
+
+    hashTable->PrintTable();
     // build trees
     uniqueTree = new BinarySearchTree;
     secondaryKeyTree = new BinarySearchTree;
+
     buildTrees(hashTable);
-    
+
     char choice;
     bool quit = false;
     cout << "Welcome! Our program is about the popular websites all around the world." << endl;
-    
+
     do {
         cout << "Please input the letter corresponding to the function you'd like to use from the list below." << endl;
         cout << "A - Add New Website\n"
@@ -42,11 +40,11 @@ void RunOption::run()
         << "W - Write data into file\n"
         << "H - Statistics\n"
         << "Q - Quit\n"<< endl;
-        
+
         cin >> choice;
         choice = toupper(choice);
         cout << endl;
-        
+
         switch (choice)
         {
             case 'A': // add
@@ -74,7 +72,7 @@ void RunOption::run()
                 cout << "Invalid input.\n";
         }
     } while (!quit);
-    
+
     if (choice == 'Q')
     {
         cout << "Thank you for using our program. Have a nice day!" << endl;
@@ -86,6 +84,7 @@ void RunOption::run()
  *************************************************/
 void RunOption::buildTrees(Hash_Table* hashTable)
 {
+    /*
     Website* hashTableItem;
     for (int i = 0; i < hashTable->getTableSize(); ++i)
     {
@@ -96,6 +95,8 @@ void RunOption::buildTrees(Hash_Table* hashTable)
             secondaryKeyTree->insert(hashTableItem->getNationality(), *hashTableItem);
         }
     }
+    */
+
 }
 
 /*************************************************
@@ -122,22 +123,22 @@ void RunOption::caseAdd()
     cout << "Please neter the average daily view per visitor(round it to one decimal place):";
     float newDailyViewString;
     cin >> newDailyViewString;
-    
+
     Website addWebsite(newWebString, newCopuntryString, newRankString, newSpendTimeString, newCompanyNameString, newDailyViewString);
-    
+
     // insert to the hash table
     hashTable->insert(addWebsite);
-    
+
     // insert to the unique tree
     uniqueTree->insert(newWebString, addWebsite);
-    
+
     // insert to secondary tree
     secondaryKeyTree->insert(newCopuntryString, addWebsite);
     cout << "Inserting done!" << endl;
-    
+
     // call run fuction again
     run();
-    
+
 }
 
 /*************************************************
@@ -155,26 +156,26 @@ void RunOption::caseDelete()
         string deleteWebName;
         cin >> deleteWebName;
         Website deleteWeb;
-        uniqueTree->removeAll(deleteWebName);
+        //uniqueTree->removeAll(deleteWebName);
         cout << "Delete done!" << endl;
     }
-    
+
     else if (toupper(deleteChoice == 'T'))
     {
         cout << "Please enter the nationality of the website:";
         string deleteWebNationality;
         cin >> deleteWebNationality;
         Website deleteWeb(deleteWebNationality);
-        secondaryKeyTree->removeAll(deleteWebNationality);
-        
+        //secondaryKeyTree->removeAll(deleteWebNationality);
+
         cout << "Delete done!" << endl;
     }
-    
+
     else
     {
         cout << "Invalid input!" << endl;
     }
-    
+
     run();
 }
 
@@ -184,7 +185,7 @@ void RunOption::caseDelete()
 void RunOption::caseStatistic()
 {
     hashTable->showStatistics();
-    
+
     // call run fuction again
     run();
 }
@@ -208,7 +209,7 @@ void RunOption::caseWriteFile()
             cout <<"Error opening out put file!" << endl;
             return;
         }
-        
+
         // write output file***********************TODO:
         cout << "Out put file Web_Data_Out.txt done!" << endl;
         // unique tree
@@ -224,10 +225,10 @@ void RunOption::caseWriteFile()
             cout <<"Error opening out put file!" << endl;
             return;
         }
-        
+
         // secondary tree *****************TODO:
         cout << "Out put file Web_Data_Out.txt done!" << endl;
-        
+
     }
     else
     {
@@ -241,11 +242,11 @@ void RunOption::caseWriteFile()
  *************************************************/
 void RunOption::caseSearch()
 {
-    
+
     // use hash table to search, faster.
     char subChoice;
     bool invalid;
-    
+
     do {
         invalid = false;
         cout << "Please select a search type from the options below.\n" << endl
@@ -255,7 +256,7 @@ void RunOption::caseSearch()
         cin >> subChoice;
         subChoice = toupper(subChoice);
         cout << endl;
-        
+
         switch (subChoice)
         {
             case 'N': // domain name
@@ -286,7 +287,7 @@ void RunOption::caseSearch()
                 break;
         }
     } while (invalid);
-    
+
     run();
 }
 
@@ -297,7 +298,7 @@ void RunOption::caseList()
 {
     char subChoice;
     bool invalid;
-    
+
     do {
         invalid = false;
         cout << "Please select how to display the website data from the options below.\n" << endl;
@@ -309,7 +310,7 @@ void RunOption::caseList()
         cin >> subChoice;
         subChoice = toupper(subChoice);
         cout << endl;
-        
+
         switch (subChoice)
         {
             case 'U': // unsorted
@@ -337,15 +338,17 @@ void RunOption::caseList()
                 break;
         }
     } while (invalid);
-    
+
     run();
 }
 
 /*************************************************
  HashTable getData function initialize the size of
  the hash table and read the data from the file.
+ This function must return the pointer pointing to
+ hashtable.
  *************************************************/
-bool RunOption::getData(Hash_Table *hashtable)
+Hash_Table* RunOption::getData(Hash_Table* hashtable)
 {
     // TODO**************************change name back
     ifstream input("websiteData.txt");
@@ -354,28 +357,27 @@ bool RunOption::getData(Hash_Table *hashtable)
         cout << "Cannot open websiteData.txt!" << endl;
         return false;
     }
-    
+
     int numOfData;
     input >> numOfData;
     input.ignore();
-    
+
     //multiply the size of array by 2, and find the next prime number
     //this gonna be in a seperate function
     //there are 8 lines for each website
     //....
-    
+
     //allocate the hashtable, size is 30 for now, with bucket size of 3
     hashtable = new Hash_Table(numOfData,3);
-    
     string holdData;
-    
+
     for(int i = 0; i < numOfData; i++)
     {
         //get the name of the website
         Website webNode;
         getline(input, holdData);
         webNode.setName(holdData);
-        
+
         //get the nationality of the website
         getline(input, holdData);
         webNode.setNationality(holdData);
@@ -391,10 +393,10 @@ bool RunOption::getData(Hash_Table *hashtable)
         //get hte average amount of pages viewed by a visitor per day
         getline(input, holdData);
         webNode.setAvgview_perVisitor(atof(holdData.data()));
-        
+
         hashtable->insert(webNode);
-        cout << webNode << endl;
+
         getline(input, holdData);
     }
-    return true;
+    return hashtable;
 }
