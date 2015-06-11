@@ -36,10 +36,14 @@ public:
    void buildTrees(Hash_Table* hashTable);
 
    // Destructor. Calls tree delete.
-   ~RunOption(){uniqueTree->clear(); delete uniqueTree;delete hashTable;}
+   ~RunOption(){uniqueTree->clear(); delete uniqueTree; delete hashTable;}
 
    // Runs the main functionality of RunOption
    void run();
+   
+   // output file validation
+   bool outputFileValidation(ofstream &outputFile);
+   
 };
 
 #endif

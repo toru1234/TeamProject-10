@@ -199,28 +199,23 @@ void RunOption::caseWriteFile()
    if (toupper(writeFileChar) == 'N')
    {
       // Open output file
-      ofstream outputFile;
-      string outputFileName = "Web_Data_Out.txt";
-      outputFile.open(outputFileName.c_str());
-      if (!outputFile.is_open())
+      ofstream outputFileByUnique;
+      if (!outputFileValidation(outputFileByUnique))
       {
-         cout <<"Error opening out put file!" << endl;
          return;
       }
 
    // write output file***********************TODO:
-      cout << "Out put file Web_Data_Out.txt done!" << endl;
-      // unique tree
+   // unique tree
+   cout << "Out put file Web_Data_Out.txt done!" << endl;
+      
    }
    else if (toupper(writeFileChar == 'T'))
    {
       // Open output file
-      ofstream outputFile;
-      string outputFileName = "Web_Data_Out.txt";
-      outputFile.open(outputFileName.c_str());
-      if (!outputFile.is_open())
+      ofstream outputFileBySecondary;
+      if(!outputFileValidation(outputFileBySecondary))
       {
-         cout <<"Error opening out put file!" << endl;
          return;
       }
 
@@ -233,6 +228,18 @@ void RunOption::caseWriteFile()
       cout << "Invalid input!" << endl;
    }
    run();
+}
+
+bool RunOption::outputFileValidation(ofstream &outputFile)
+{
+   string outputFileName = "Web_Data_Out.txt";
+   outputFile.open(outputFileName.c_str());
+   if (!outputFile.is_open())
+   {
+      cout <<"Error opening out put file!" << endl;
+      return false;
+   }
+   return true;
 }
 
 /*************************************************
@@ -260,12 +267,15 @@ void RunOption::caseSearch()
          case 'N': // domain name
          {
             cout << "Please enter the name of the website you want to search: ";
-            string primarykeyName;
-            cin >> primarykeyName;
-            Website targetWebsite(primarykeyName);
-            Website aquiredWebsite;
-            uniqueTree->getEntry(primarykeyName, aquiredWebsite);
-            display(aquiredWebsite);
+            string primarykey;
+            cin >> primarykey;
+            Website targetWebsite;
+            vector<Website> aquiredWebsite;
+            
+            uniqueTree->getEntry(primarykey, aquiredWebsite);
+            
+            // disply unique item
+            display(aquiredWebsite[0]);
             break;
          }
          case 'C': // by country
@@ -273,6 +283,17 @@ void RunOption::caseSearch()
             cout <<"Please enter the name of the country that you want ot search: ";
             string secondaryKey;
             cin >> secondaryKey;
+            Website targetWebsite;
+            vector<Website> aquiredWebsite;
+            
+            uniqueTree->getEntry(secondaryKey, aquiredWebsite);
+            
+            // idsplay all searched items
+            for (int i = 0; i < aquiredWebsite.size(); ++i)
+            {
+               display(aquiredWebsite[i]);
+
+            }
             break;
          }
          case 'R': // previous
@@ -313,18 +334,30 @@ void RunOption::caseList()
       {
          case 'U': // unsorted
             cout << "Unsorted List as Followed:" << endl;
-            // call shuffle, shuffle the vector array.
+            // call shuffle in case the data has already been sorted.
+            /*********************************TODO:
+             make a vector and push all items in. shuffle the vector and print the vector
+             ****************************/
+            
             break;
          case 'P': // alphabetical
             cout << "Sorted by the name of the website:" << endl;
             // call printBST tree.
+            uniqueTree->preOrder(display) << endl;
             break;
          case 'O': // countries
             cout << "Sorted by country:" << endl;
             // call print SecondaryTree function.
+            secondaryKeyTree->inOrder(display) << endl;
             break;
          case 'I': // special
             cout << "Sorted tree indented list:" << endl;
+            cout << "Sorted by name: " << endl;
+            uniqueTree->indented();
+            cout << endl;
+            cout << "Sorted by nationality: " << endl;
+            secondaryKeyTree->indented();
+            cout << endl;
             break;
          case 'R': // previous
             invalid = true;
