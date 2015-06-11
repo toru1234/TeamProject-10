@@ -1,3 +1,4 @@
+
 /**************************************************************
  Group: 10
  Name: Tingting Wang, Toru Nakajima, Tin Huang Cui, John Dywer
@@ -16,16 +17,15 @@ using namespace std;
 
 /***********************************************
  main function. it will only pass the file name
- to the runFunction object. 
+ to the runFunction object.
  ***********************************************/
 int main()
 {
-   string inputFileName = "websiteData.txt";
-   
-   RunOption runOption(inputFileName);
-   
-   runOption.run();
-   
-   return 0;
+    string inputFileName = "websiteData.txt";
+    
+    RunOption runOption(inputFileName);
+    
+    runOption.run();
+    
+    return 0;
 }
-
