@@ -1,5 +1,11 @@
 
 #include "BinaryTree.h"
+
+//------------------------------------
+
+
+
+
 BinaryTree::BinaryTree(const BinaryTree & tree)
 {
     // check if the tree is valid
@@ -46,8 +52,8 @@ void BinaryTree::destroyTree(BinaryNode* nodePtr)
 }
 
 void BinaryTree::inOrder(void visit(Website &),
-                                   const Website & minItem,
-                                   const Website & maxItem) const
+                         const Website & minItem,
+                         const Website & maxItem) const
 {
     _inorder(visit, rootPtr, minItem, maxItem);
 }
@@ -78,10 +84,36 @@ void BinaryTree::_inorder(void visit(Website &), BinaryNode* nodePtr) const
     _inorder(visit, nodePtr->getRightPtr());
 }
 
+
+void BinaryTree::_writeUniqueKeyinFile(BinaryNode* nodePtr,vector<Website>& outputFile)
+{
+    // left-root-right
+    if (nodePtr == 0)
+    {
+        return;
+    }
+    _writeUniqueKeyinFile(nodePtr->getLeftPtr(), outputFile);
+    Website web = nodePtr->getWebsite();
+    outputFile.push_back(web);
+    _writeUniqueKeyinFile(nodePtr->getRightPtr(), outputFile);
+}
+
+void BinaryTree::_writeSecondaryKeyinFile(BinaryNode* nodePtr,vector<Website>& outputFile)
+{
+    // left-root-right
+    if (nodePtr == 0)
+    {
+        return;
+    }
+    _writeSecondaryKeyinFile(nodePtr->getLeftPtr(), outputFile);
+    Website web = nodePtr->getWebsite();
+    outputFile.push_back(web);
+    _writeSecondaryKeyinFile(nodePtr->getRightPtr(), outputFile);
+}
 void BinaryTree::_inorder(void visit(Website &),
-                                    BinaryNode* nodePtr,
-                                    const Website & minItem,
-                                    const Website & maxItem) const
+                          BinaryNode* nodePtr,
+                          const Website & minItem,
+                          const Website & maxItem) const
 {
     // Node is null
     if (nodePtr == 0)
