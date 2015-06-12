@@ -3,11 +3,13 @@
  funtion declarition for RunOption.
  **********************************/
 
+#include "RunOption.h"
+#include <cstdlib>
 
 /************************************************
  diaplay function, will be passed in parameter.
  *************************************************/
-void display(const Website& web)
+void RunOption::display(Website& web)
 {
     cout << web << endl;
 }
@@ -19,15 +21,13 @@ void display(const Website& web)
 void RunOption::run()
 {
     // build the hash table off the input file
-    hashTable = new Hash_Table;
-    
-    if (!getData(hashTable))
+    if(!getData()){
         return;
+    }
     
     // build trees
-    uniqueTree = new BinarySearchTree;
-    secondaryKeyTree = new BinarySearchTree;
-    buildTrees(hashTable);
+    
+    buildTrees();
     
     char choice;
     bool quit = false;
@@ -41,7 +41,7 @@ void RunOption::run()
         << "L - List Websites\n"
         << "W - Write data into file\n"
         << "H - Statistics\n"
-        << "Q - Quit\n"<< endl;
+        << "Q - Quit\n";
         
         cin >> choice;
         choice = toupper(choice);
@@ -84,12 +84,15 @@ void RunOption::run()
 /*************************************************
  // build trees functions, passed the hash table in.
  *************************************************/
-void RunOption::buildTrees(Hash_Table* hashTable)
+void RunOption::buildTrees()
 {
     Website* hashTableItem;
-    for (int i = 0; i < hashTable->getTableSize(); ++i)
+    uniqueTree = new BinarySearchTree;
+    secondaryKeyTree = new BinarySearchTree;
+
+    for (int i = 0; i < hashTable->getTableSize(); ++i) //loop for the table size
     {
-        for (int j = 0; j < hashTable->getHash_Entry()[j].count; ++j)
+        for (int j = 0; j < hashTable->getHash_Entry()[i].count; ++j) //loop for the counter in each element of the table
         {
             hashTableItem = hashTable->getHashItem(i, j);
             uniqueTree->insert(hashTableItem->getName(), *hashTableItem);
@@ -108,6 +111,7 @@ void RunOption::caseAdd()
     cin >> newWebString;
     cout << "Please enter the nationality of the website:";
     string newCopuntryString;
+    cin >> newCopuntryString;
     getline(cin, newCopuntryString);
     cout << "Please enter the rank of the website no bigger than " << uniqueTree->getCount() << " :";
     unsigned int newRankString;
@@ -125,6 +129,8 @@ void RunOption::caseAdd()
     
     Website addWebsite(newWebString, newCopuntryString, newRankString, newSpendTimeString, newCompanyNameString, newDailyViewString);
     
+    cout << "Inserting the website.......\n";
+    sleepFor();     //sleep for a second
     // insert to the hash table
     hashTable->insert(addWebsite);
     
@@ -134,9 +140,6 @@ void RunOption::caseAdd()
     // insert to secondary tree
     secondaryKeyTree->insert(newCopuntryString, addWebsite);
     cout << "Inserting done!" << endl;
-    
-    // call run fuction again
-    run();
     
 }
 
@@ -153,9 +156,11 @@ void RunOption::caseDelete()
     {
         cout << "Please enter the name of the website:";
         string deleteWebName;
-        cin >> deleteWebName;
+        cin >> deleteWebName;       //get a delete key
         Website deleteWeb;
-        uniqueTree->removeAll(deleteWebName);
+        cout << "Deleting the websites......\n";
+        sleepFor();     //sleep for a second
+        uniqueTree->removeAll(deleteWebName);   //delete it if it's found
         cout << "Delete done!" << endl;
     }
     
@@ -163,7 +168,7 @@ void RunOption::caseDelete()
     {
         cout << "Please enter the nationality of the website:";
         string deleteWebNationality;
-        cin >> deleteWebNationality;
+        cin >> deleteWebNationality;    //get a delete key
         Website deleteWeb(deleteWebNationality);
         secondaryKeyTree->removeAll(deleteWebNationality);
         
@@ -175,7 +180,6 @@ void RunOption::caseDelete()
         cout << "Invalid input!" << endl;
     }
     
-    run();
 }
 
 /*************************************************
@@ -185,8 +189,6 @@ void RunOption::caseStatistic()
 {
     hashTable->showStatistics();
     
-    // call run fuction again
-    run();
 }
 
 /*************************************************
@@ -194,46 +196,68 @@ void RunOption::caseStatistic()
  *************************************************/
 void RunOption::caseWriteFile()
 {
-    cout << "Do you want ot write the file by its name or nationality? N for name and T for nationality:";
+    cout << "Do you want to write the file by its name or nationality? N for name and T for nationality:";
     char writeFileChar;
-    cin >> writeFileChar;
+    cin >> writeFileChar;       //get a choice
     if (toupper(writeFileChar) == 'N')
     {
         // Open output file
-        ofstream outputFile;
-        string outputFileName = "Web_Data_Out.txt";
-        outputFile.open(outputFileName.c_str());
-        if (!outputFile.is_open())
+        ofstream outputFileByUnique;
+        if (!outputFileValidation(outputFileByUnique))
         {
-            cout <<"Error opening out put file!" << endl;
             return;
         }
+        uniqueTree->writeUniqueKeyinFile(outputFile);   //get all the data and store it in the vector
+        cout << "outputFile:\n";
+        cout << "writing the result......." << endl;
         
-        // write output file***********************TODO:
+        sleepFor();     //sleep for a second
+        
+        for (auto p : outputFile){
+            outputFileByUnique << p;    //writing the data to the file
+        }
         cout << "Out put file Web_Data_Out.txt done!" << endl;
-        // unique tree
+        
     }
     else if (toupper(writeFileChar == 'T'))
     {
         // Open output file
-        ofstream outputFile;
-        string outputFileName = "Web_Data_Out.txt";
-        outputFile.open(outputFileName.c_str());
-        if (!outputFile.is_open())
+        ofstream outputFileBySecondary;
+        if(!outputFileValidation(outputFileBySecondary))
         {
-            cout <<"Error opening out put file!" << endl;
             return;
         }
         
-        // secondary tree *****************TODO:
-        cout << "Out put file Web_Data_Out.txt done!" << endl;
+        secondaryKeyTree->writeSecondaryKeyinFile(outputFile);  //get all the data in the vector
+        cout << "outputFile:\n";
+        cout << "writing the result......." << endl;
         
+        sleepFor();     //sleep for a second
+        
+        for (auto p : outputFile){
+            outputFileBySecondary << p; //wrting the data to the file
+        }
+        cout << "Out put file Web_Data_Out.txt done!" << endl << endl;
     }
     else
     {
         cout << "Invalid input!" << endl;
     }
-    run();
+}
+/*************************************************
+ This function returns false when the output file
+ is not opened successfully
+ *************************************************/
+bool RunOption::outputFileValidation(ofstream &outputFile)
+{
+    string outputFileName = "Web_Data_Out.txt";
+    outputFile.open(outputFileName.c_str());
+    if (!outputFile.is_open())
+    {
+        cout <<"Error opening output file!" << endl;
+        return false;
+    }
+    return true;
 }
 
 /*************************************************
@@ -249,10 +273,10 @@ void RunOption::caseSearch()
     do {
         invalid = false;
         cout << "Please select a search type from the options below.\n" << endl
-        << "N - Display website data for given domain name\n"
-        << "C - Display websites by country\n"
+        << "N - Search website data for given domain name\n"
+        << "C - Search websites by country\n"
         << "R - Return to previous menu\n" << endl;
-        cin >> subChoice;
+        cin >> subChoice;       //get a choice
         subChoice = toupper(subChoice);
         cout << endl;
         
@@ -261,24 +285,49 @@ void RunOption::caseSearch()
             case 'N': // domain name
             {
                 cout << "Please enter the name of the website you want to search: ";
-                string primarykeyName;
-                cin >> primarykeyName;
-                Website targetWebsite(primarykeyName);
-                Website aquiredWebsite;
-                uniqueTree->getEntry(primarykeyName, aquiredWebsite);
-                display(aquiredWebsite);
+                string primarykey;
+                cin >> primarykey;  //get a search key
+                cout << "Searing the website......";
+                sleepFor();     //sleep for a second
+                Website* targetWebsite;
+                targetWebsite = hashTable->getData(primarykey); //return the address
+                if(targetWebsite)
+                {
+                    cout << *targetWebsite << endl;
+                }
+                else
+                {
+                    cout << "Not found!" << endl;
+                }
                 break;
             }
             case 'C': // by country
             {
-                cout <<"Please enter the name of the country that you want ot search: ";
+                cout <<"Please enter the name of the country that you want to search: ";
                 string secondaryKey;
-                cin >> secondaryKey;
+                cin >> secondaryKey;    // get a search key
+                Website targetWebsite;
+                vector<Website> aquiredWebsite;
+                cout << "Searing the websites......";
+                sleepFor();     //sleep for a second
+                if (uniqueTree->getEntry(secondaryKey, aquiredWebsite))
+                {
+                    // idsplay all searched items
+                    for (int i = 0; i < aquiredWebsite.size(); ++i)
+                    {
+                        display(aquiredWebsite[i]); //show all the data that's matched with the search key
+                        
+                    }
+                }
+                else
+                {
+                    cout << "not found!" << endl;
+                }
+                cout << "Search done!" << endl;
                 break;
             }
             case 'R': // previous
                 invalid = true;
-                run();
                 break;
             default:
                 invalid = true;
@@ -286,8 +335,6 @@ void RunOption::caseSearch()
                 break;
         }
     } while (invalid);
-    
-    run();
 }
 
 /*************************************************
@@ -306,7 +353,7 @@ void RunOption::caseList()
         << "O - display by countries\n"
         << "I - display special\n"
         << "R - Return to previous menu\n" << endl;
-        cin >> subChoice;
+        cin >> subChoice;   //get a choice
         subChoice = toupper(subChoice);
         cout << endl;
         
@@ -314,23 +361,40 @@ void RunOption::caseList()
         {
             case 'U': // unsorted
                 cout << "Unsorted List as Followed:" << endl;
-                // call shuffle, shuffle the vector array.
+                cout << "Shuffling......";
+                sleepFor();     //sleep for a second
+                // call shuffle in case the data has already been sorted.
+                /*********************************TODO:
+                 make a vector and push all items in. shuffle the vector and print the vector
+                 ****************************/
+                
                 break;
             case 'P': // alphabetical
                 cout << "Sorted by the name of the website:" << endl;
                 // call printBST tree.
+                uniqueTree->preOrder(display);
                 break;
+                
             case 'O': // countries
                 cout << "Sorted by country:" << endl;
                 // call print SecondaryTree function.
+                secondaryKeyTree->inOrder(display);
                 break;
+                
             case 'I': // special
                 cout << "Sorted tree indented list:" << endl;
+                cout << "Sorted by name: " << endl;
+                uniqueTree->indented();
+                cout << endl;
+                cout << "Sorted by nationality: " << endl;
+                secondaryKeyTree->indented();
+                cout << endl;
                 break;
+                
             case 'R': // previous
-                invalid = true;
-                run();
+                invalid = false;
                 break;
+                
             default:
                 invalid = true;
                 cout << "Invalid input." << endl;
@@ -338,14 +402,25 @@ void RunOption::caseList()
         }
     } while (invalid);
     
-    run();
+}
+
+/*************************************************
+ This function waits for a second to make the
+ processes look like they are goind on.
+ *************************************************/
+void RunOption::sleepFor(int seconds){
+    clock_t endwait;
+    endwait = clock() +
+              seconds +
+              CLOCKS_PER_SEC;
+    while(clock() < endwait);
 }
 
 /*************************************************
  HashTable getData function initialize the size of
  the hash table and read the data from the file.
  *************************************************/
-bool RunOption::getData(Hash_Table *hashtable)
+bool RunOption::getData()
 {
     // TODO**************************change name back
     ifstream input("websiteData.txt");
@@ -356,7 +431,7 @@ bool RunOption::getData(Hash_Table *hashtable)
     }
     
     int numOfData;
-    input >> numOfData;
+    input >> numOfData;     //get the number of lines in the file
     input.ignore();
     
     //multiply the size of array by 2, and find the next prime number
@@ -365,7 +440,7 @@ bool RunOption::getData(Hash_Table *hashtable)
     //....
     
     //allocate the hashtable, size is 30 for now, with bucket size of 3
-    hashtable = new Hash_Table(numOfData,3);
+    hashTable = new Hash_Table(30,3);
     
     string holdData;
     
@@ -392,8 +467,7 @@ bool RunOption::getData(Hash_Table *hashtable)
         getline(input, holdData);
         webNode.setAvgview_perVisitor(atof(holdData.data()));
         
-        hashtable->insert(webNode);
-        cout << webNode << endl;
+        hashTable->insert(webNode);
         getline(input, holdData);
     }
     return true;
