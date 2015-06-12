@@ -18,7 +18,7 @@ private:
    BinarySearchTree* uniqueTree;
    BinarySearchTree* secondaryKeyTree;
    Hash_Table* hashTable;
-   Hash_Table* getData(Hash_Table*);
+   void getData();
    void caseSearch();
    void caseList();
    void caseAdd();
@@ -28,6 +28,9 @@ private:
 public:
    // default consturctor
    RunOption(){uniqueTree = 0; secondaryKeyTree = 0; fileName = "";}
+   
+   // print function
+   static void display(Website &web);
 
    // constructor
    RunOption(string inputFileName){uniqueTree = 0; secondaryKeyTree = 0; fileName = inputFileName;}
@@ -36,10 +39,14 @@ public:
    void buildTrees(Hash_Table* hashTable);
 
    // Destructor. Calls tree delete.
-   ~RunOption(){uniqueTree->clear(); delete uniqueTree;delete hashTable;}
+   ~RunOption(){uniqueTree->clear(); delete uniqueTree; delete hashTable;}
 
    // Runs the main functionality of RunOption
    void run();
+   
+   // output file validation
+   bool outputFileValidation(ofstream &outputFile);
+   
 };
 
 #endif

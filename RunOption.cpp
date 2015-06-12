@@ -9,7 +9,7 @@ funtion declarition for RunOption.
 /************************************************
  diaplay function, will be passed in parameter.
 *************************************************/
-void display(const Website& web)
+ void RunOption::display(Website& web)
 {
    cout << web << endl;
 }
@@ -21,7 +21,7 @@ It will display the menu and build trees and hash table.
 void RunOption::run()
 {
    // build the hash table off the input file
-   hashTable = getData(hashTable);
+   getData();
    
    // build trees
    uniqueTree = new BinarySearchTree;
@@ -40,7 +40,7 @@ void RunOption::run()
       << "L - List Websites\n"
       << "W - Write data into file\n"
       << "H - Statistics\n"
-      << "Q - Quit\n"<< endl;
+      << "Q - Quit\n";
 
       cin >> choice;
       choice = toupper(choice);
@@ -107,6 +107,7 @@ void RunOption::caseAdd()
    cin >> newWebString;
    cout << "Please enter the nationality of the website:";
    string newCopuntryString;
+   cin >> newCopuntryString;
    getline(cin, newCopuntryString);
    cout << "Please enter the rank of the website no bigger than " << uniqueTree->getCount() << " :";
    unsigned int newRankString;
@@ -199,28 +200,23 @@ void RunOption::caseWriteFile()
    if (toupper(writeFileChar) == 'N')
    {
       // Open output file
-      ofstream outputFile;
-      string outputFileName = "Web_Data_Out.txt";
-      outputFile.open(outputFileName.c_str());
-      if (!outputFile.is_open())
+      ofstream outputFileByUnique;
+      if (!outputFileValidation(outputFileByUnique))
       {
-         cout <<"Error opening out put file!" << endl;
          return;
       }
 
    // write output file***********************TODO:
-      cout << "Out put file Web_Data_Out.txt done!" << endl;
-      // unique tree
+   // unique tree
+   cout << "Out put file Web_Data_Out.txt done!" << endl;
+      
    }
    else if (toupper(writeFileChar == 'T'))
    {
       // Open output file
-      ofstream outputFile;
-      string outputFileName = "Web_Data_Out.txt";
-      outputFile.open(outputFileName.c_str());
-      if (!outputFile.is_open())
+      ofstream outputFileBySecondary;
+      if(!outputFileValidation(outputFileBySecondary))
       {
-         cout <<"Error opening out put file!" << endl;
          return;
       }
 
@@ -233,6 +229,18 @@ void RunOption::caseWriteFile()
       cout << "Invalid input!" << endl;
    }
    run();
+}
+
+bool RunOption::outputFileValidation(ofstream &outputFile)
+{
+   string outputFileName = "Web_Data_Out.txt";
+   outputFile.open(outputFileName.c_str());
+   if (!outputFile.is_open())
+   {
+      cout <<"Error opening out put file!" << endl;
+      return false;
+   }
+   return true;
 }
 
 /*************************************************
@@ -248,8 +256,8 @@ void RunOption::caseSearch()
    do {
       invalid = false;
       cout << "Please select a search type from the options below.\n" << endl
-      << "N - Display website data for given domain name\n"
-      << "C - Display websites by country\n"
+      << "N - Search website data for given domain name\n"
+      << "C - Search websites by country\n"
       << "R - Return to previous menu\n" << endl;
       cin >> subChoice;
       subChoice = toupper(subChoice);
@@ -260,12 +268,16 @@ void RunOption::caseSearch()
          case 'N': // domain name
          {
             cout << "Please enter the name of the website you want to search: ";
-            string primarykeyName;
-            cin >> primarykeyName;
-            Website targetWebsite(primarykeyName);
-            Website aquiredWebsite;
-            uniqueTree->getEntry(primarykeyName, aquiredWebsite);
-            display(aquiredWebsite);
+            string primarykey;
+            cin >> primarykey;
+            Website targetWebsite;
+            vector<Website> aquiredWebsite;
+            
+            uniqueTree->getEntry(primarykey, aquiredWebsite);
+            
+            // disply unique item
+            display(aquiredWebsite[0]);
+            cout << "Search done!" << endl;
             break;
          }
          case 'C': // by country
@@ -273,6 +285,18 @@ void RunOption::caseSearch()
             cout <<"Please enter the name of the country that you want ot search: ";
             string secondaryKey;
             cin >> secondaryKey;
+            Website targetWebsite;
+            vector<Website> aquiredWebsite;
+            
+            uniqueTree->getEntry(secondaryKey, aquiredWebsite);
+            
+            // idsplay all searched items
+            for (int i = 0; i < aquiredWebsite.size(); ++i)
+            {
+               display(aquiredWebsite[i]);
+
+            }
+            cout << "Search done!" << endl;
             break;
          }
          case 'R': // previous
@@ -313,23 +337,39 @@ void RunOption::caseList()
       {
          case 'U': // unsorted
             cout << "Unsorted List as Followed:" << endl;
-            // call shuffle, shuffle the vector array.
+            // call shuffle in case the data has already been sorted.
+            /*********************************TODO:
+             make a vector and push all items in. shuffle the vector and print the vector
+             ****************************/
+            
             break;
          case 'P': // alphabetical
             cout << "Sorted by the name of the website:" << endl;
             // call printBST tree.
+            uniqueTree->preOrder(display);
             break;
+            
          case 'O': // countries
             cout << "Sorted by country:" << endl;
             // call print SecondaryTree function.
+            secondaryKeyTree->inOrder(display);
             break;
+            
          case 'I': // special
             cout << "Sorted tree indented list:" << endl;
+            cout << "Sorted by name: " << endl;
+            uniqueTree->indented();
+            cout << endl;
+            cout << "Sorted by nationality: " << endl;
+            secondaryKeyTree->indented();
+            cout << endl;
             break;
+            
          case 'R': // previous
             invalid = true;
             run();
             break;
+            
          default:
             invalid = true;
             cout << "Invalid input." << endl;
@@ -344,7 +384,7 @@ void RunOption::caseList()
 HashTable getData function initialize the size of 
 the hash table and read the data from the file.
 *************************************************/
-Hash_Table* RunOption::getData(Hash_Table *hashtable)
+void RunOption::getData()
 {
    // TODO**************************change name back
     ifstream input("/Users/TingtingWang/Documents/TeamProject-10/websiteData.txt");
@@ -364,7 +404,7 @@ Hash_Table* RunOption::getData(Hash_Table *hashtable)
     //....
 
     //allocate the hashtable, size is 30 for now, with bucket size of 3
-    hashtable = new Hash_Table(30,3);
+    hashTable = new Hash_Table(30,3);
 
     string holdData;
 
@@ -391,8 +431,7 @@ Hash_Table* RunOption::getData(Hash_Table *hashtable)
       getline(input, holdData);
       webNode.setAvgview_perVisitor(atof(holdData.data()));
 
-      hashtable->insert(webNode);
+      hashTable->insert(webNode);
       getline(input, holdData);
    }
-   return hashtable;
 }
