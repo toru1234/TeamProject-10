@@ -1,10 +1,11 @@
+
+// This function will run the main menu and the function followed by the menu options.
 #ifndef RUNOPTION_H
 #define RUNOPTION_H
 
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <cstdlib>
 #include "BinarySearchTree.h"
 #include "Hash_Table.h"
 
@@ -17,7 +18,9 @@ private:
     BinarySearchTree* uniqueTree;
     BinarySearchTree* secondaryKeyTree;
     Hash_Table* hashTable;
-    bool getData(Hash_Table*);
+    vector<Website> outputFile;
+    void sleepFor(int seconds = 1);
+    bool getData();
     void caseSearch();
     void caseList();
     void caseAdd();
@@ -26,19 +29,26 @@ private:
     void caseStatistic();
 public:
     // default consturctor
-    RunOption(){uniqueTree = secondaryKeyTree = nullptr; hashTable = nullptr; fileName = "";}
+    RunOption(){uniqueTree = secondaryKeyTree = 0; fileName = "";}
+    
+    // print function
+    static void display(Website &web);
     
     // constructor
     RunOption(string inputFileName){uniqueTree = 0; secondaryKeyTree = 0; fileName = inputFileName;}
     
     // build binary unique key and secondary key tree
-    void buildTrees(Hash_Table* hashTable);
+    void buildTrees();
     
     // Destructor. Calls tree delete.
-    ~RunOption(){uniqueTree->clear(); delete uniqueTree;delete hashTable;}
+    ~RunOption(){uniqueTree->clear(); delete uniqueTree; delete hashTable;}
     
     // Runs the main functionality of RunOption
     void run();
+    
+    // output file validation
+    bool outputFileValidation(ofstream &outputFile);
+    
 };
 
 #endif
