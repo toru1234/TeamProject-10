@@ -1,10 +1,10 @@
-
 #ifndef __TeamProject__BinaryTree__
 #define __TeamProject__BinaryTree__
 
 #include <stdio.h>
 #include "BinaryNode.h"
 #include <iostream>
+#include <vector>
 
 class BinaryTree
 {
@@ -15,7 +15,7 @@ protected:
 public:
     // "admin" functions
     BinaryTree() {rootPtr = 0; count = 0;}
-   
+    
     // copy constructor
     BinaryTree(const BinaryTree & tree);
     virtual ~BinaryTree() { }
@@ -27,6 +27,9 @@ public:
     void clear()			{destroyTree(rootPtr); rootPtr = 0; count = 0;}
     void preOrder(void visit(Website &)) const {_preorder(visit, rootPtr);}
     void inOrder(void visit(Website &)) const  {_inorder(visit, rootPtr);}
+    void writeUniqueKeyinFile(vector<Website>& outputFile)  {_writeUniqueKeyinFile(rootPtr, outputFile);}
+    void writeSecondaryKeyinFile(vector<Website>& outputFile)
+    {_writeSecondaryKeyinFile(rootPtr, outputFile);}
     void inOrder(void visit(Website &),
                  const Website & minItem,
                  const Website & maxItem) const;
@@ -41,7 +44,7 @@ public:
     // abstract functions to be implemented by derived class
     virtual bool insert(const string inputString, const Website & newData) = 0;
     virtual bool remove(const string key) = 0;
-    virtual bool getEntry(const Website & anEntry, Website & returnedItem) const = 0;
+    virtual bool getEntry(const string key, vector<Website> returnedItems) const = 0;
     BinaryNode* searchInRange(const Website & minRange, const Website & maxRange) const;
     
 private:
@@ -54,10 +57,13 @@ private:
     // internal traverse
     void _preorder(void visit(Website &), BinaryNode* nodePtr) const;
     void _inorder(void visit(Website &), BinaryNode* nodePtr) const;
+    void _writeUniqueKeyinFile(BinaryNode* nodePtr, vector<Website>&);
+    void _writeSecondaryKeyinFile(BinaryNode* nodePtr, vector<Website>&);
     void _inorder(void visit(Website &), BinaryNode* nodePtr, const Website & minItem, const Website & maxItem) const;
     void _postorder(void visit(Website &), BinaryNode* nodePtr) const;
     void _printTreeIndented(BinaryNode* nodePtr, int depth) const;
     
-}; 
+};
 
 #endif
+
