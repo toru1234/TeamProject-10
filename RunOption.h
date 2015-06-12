@@ -18,7 +18,7 @@ private:
    BinarySearchTree* uniqueTree;
    BinarySearchTree* secondaryKeyTree;
    Hash_Table* hashTable;
-   void getData();
+   bool getData();
    void caseSearch();
    void caseList();
    void caseAdd();
@@ -36,7 +36,7 @@ public:
    RunOption(string inputFileName){uniqueTree = 0; secondaryKeyTree = 0; fileName = inputFileName;}
 
    // build binary unique key and secondary key tree
-   void buildTrees(Hash_Table* hashTable);
+   void buildTrees();
 
    // Destructor. Calls tree delete.
    ~RunOption(){uniqueTree->clear(); delete uniqueTree; delete hashTable;}

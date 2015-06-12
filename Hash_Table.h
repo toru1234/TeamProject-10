@@ -45,6 +45,8 @@ public:
     //destructor
     ~Hash_Table();
 
+    //get the pointer of hash_entry
+    struct Hash_Entry* getHash_Entry() const{ return table;}
     //get the pointer of data corresponding the key
     Website* getData(const string &strkey) const;
     // getters for the hash size and the table size

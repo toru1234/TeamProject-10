@@ -26,7 +26,7 @@ void RunOption::run()
    // build trees
    uniqueTree = new BinarySearchTree;
    secondaryKeyTree = new BinarySearchTree;
-   buildTrees(hashTable);
+   buildTrees();
    
    char choice;
    bool quit = false;
@@ -83,12 +83,12 @@ void RunOption::run()
 /*************************************************
 // build trees functions, passed the hash table in.
 *************************************************/
-void RunOption::buildTrees(Hash_Table* hashTable)
+void RunOption::buildTrees()
 {
    Website* hashTableItem;
    for (int i = 0; i < hashTable->getTableSize(); ++i)
    {
-      for (int j = 0; j < hashTable->getBucketSize(); ++i)
+      for (int j = 0; j < hashTable->getHash_Entry()[j].count; ++j)
       {
          hashTableItem = hashTable->getHashItem(i, j);
          uniqueTree->insert(hashTableItem->getName(), *hashTableItem);
@@ -135,10 +135,7 @@ void RunOption::caseAdd()
    secondaryKeyTree->insert(newCopuntryString, addWebsite);
    cout << "Inserting done!" << endl;
    
-   // call run fuction again
-   run();
-
-}
+  }
 
 /*************************************************
  functionality for delete case.
@@ -175,7 +172,6 @@ void RunOption::caseDelete()
       cout << "Invalid input!" << endl;
    }
 
-   run();
 }
 
 /*************************************************
@@ -270,31 +266,39 @@ void RunOption::caseSearch()
             cout << "Please enter the name of the website you want to search: ";
             string primarykey;
             cin >> primarykey;
-            Website targetWebsite;
-            vector<Website> aquiredWebsite;
-            
-            uniqueTree->getEntry(primarykey, aquiredWebsite);
-            
-            // disply unique item
-            display(aquiredWebsite[0]);
-            cout << "Search done!" << endl;
+            Website* targetWebsite;
+            targetWebsite = hashTable->getData(primarykey);
+            if(targetWebsite)
+            {
+               cout << *targetWebsite << endl;
+            }
+            else
+            {
+               cout << "Not found!" << endl;
+            }
             break;
          }
          case 'C': // by country
          {
-            cout <<"Please enter the name of the country that you want ot search: ";
+            cout <<"Please enter the name of the country that you want to search: ";
             string secondaryKey;
             cin >> secondaryKey;
             Website targetWebsite;
             vector<Website> aquiredWebsite;
             
-            uniqueTree->getEntry(secondaryKey, aquiredWebsite);
-            
-            // idsplay all searched items
-            for (int i = 0; i < aquiredWebsite.size(); ++i)
+            if (uniqueTree->getEntry(secondaryKey, aquiredWebsite))
             {
-               display(aquiredWebsite[i]);
+               // idsplay all searched items
+               for (int i = 0; i < aquiredWebsite.size(); ++i)
+               {
+                  display(aquiredWebsite[i]);
+                  
+               }
 
+            }
+            else
+            {
+               cout << "not found!" << endl;
             }
             cout << "Search done!" << endl;
             break;
@@ -309,8 +313,6 @@ void RunOption::caseSearch()
             break;
       }
    } while (invalid);
-
-   run();
 }
 
 /*************************************************
@@ -377,21 +379,20 @@ void RunOption::caseList()
       }
    } while (invalid);
 
-   run();
 }
 
 /*************************************************
 HashTable getData function initialize the size of 
 the hash table and read the data from the file.
 *************************************************/
-void RunOption::getData()
+bool RunOption::getData()
 {
    // TODO**************************change name back
     ifstream input("/Users/TingtingWang/Documents/TeamProject-10/websiteData.txt");
     if(input.fail())
     {
         cout << "Cannot open websiteData.txt!" << endl;
-        exit(EXIT_FAILURE);
+        return false;
     }
 
     int numOfData;
@@ -434,4 +435,5 @@ void RunOption::getData()
       hashTable->insert(webNode);
       getline(input, holdData);
    }
+   return true;
 }
