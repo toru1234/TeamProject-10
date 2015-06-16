@@ -218,9 +218,10 @@ void RunOption::caseWriteFile()
             outputFileByUnique << p;    //writing the data to the file
         }
         cout << "Out put file Web_Data_Out.txt done!" << endl;
+       outputFileByUnique.close();
         
     }
-    else if (toupper(writeFileChar == 'T'))
+    else if (toupper(writeFileChar) == 'T')
     {
         // Open output file
         ofstream outputFileBySecondary;
@@ -239,6 +240,7 @@ void RunOption::caseWriteFile()
             outputFileBySecondary << p; //wrting the data to the file
         }
         cout << "Out put file Web_Data_Out.txt done!" << endl << endl;
+       outputFileBySecondary.close();
     }
     else
     {
