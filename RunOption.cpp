@@ -213,7 +213,8 @@ void RunOption::caseWriteFile()
         
         sleepFor();     //sleep for a second
         
-        for (auto p : outputFile){
+        for (auto p : outputFile)
+        {
             outputFileByUnique << p;    //writing the data to the file
         }
         cout << "Out put file Web_Data_Out.txt done!" << endl;

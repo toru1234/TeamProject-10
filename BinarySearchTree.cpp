@@ -36,7 +36,7 @@ void BinarySearchTree::removeAll(const string key)
    
 }
 
-bool BinarySearchTree::getEntry(const Website& anEntry, Website & returnedItem) const
+bool BinarySearchTree::getEntry(const Website& anEntry, vector<Website> returnedItem) const
 {
     // check if the entry is valid
     if (findNode(this->rootPtr, anEntry) == 0)
@@ -45,7 +45,7 @@ bool BinarySearchTree::getEntry(const Website& anEntry, Website & returnedItem) 
     }
     else
     {
-        returnedItem = findNode(this->rootPtr, anEntry)->getWebsite();
+        returnedItem.push_back(findNode(this->rootPtr, anEntry)->getWebsite());
         return true;
     }
 }

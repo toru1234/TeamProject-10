@@ -34,7 +34,7 @@ public:
     // remove function to call remove one node, for the case when several nodes need to be removed
     void removeAll(const string key);
     // find a target node
-    bool getEntry(const Website & target, Website & returnedItem) const;
+    bool getEntry(const Website & target, vector<Website> returnedItem) const;
     // print largest item
     bool getHighestKeyItem(Website & highestKeyItem) const;
     // print smallest item
