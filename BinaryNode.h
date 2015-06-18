@@ -1,4 +1,3 @@
-
 #ifndef __TeamProject__BinaryNode__
 #define __TeamProject__BinaryNode__
 
@@ -19,21 +18,20 @@ public:
     BinaryNode(const Website & web,
                BinaryNode* left,
                BinaryNode* right) {item = web; leftPtr = left; rightPtr = right;}
-   
+    
     // accessors
     void setKey(const string inputKey) {key = inputKey;}
     void setItem(const Website & web) {item = web;}
     void setLeftPtr(BinaryNode* left) {leftPtr = left;}
     void setRightPtr(BinaryNode* right) {rightPtr = right;}
-   
+    
     // mutators
-   string getKey() const {return key;}
+    string getKey() const {return key;}
     Website getWebsite() const	 {return item;}
     BinaryNode* getLeftPtr() const  {return leftPtr;}
     BinaryNode* getRightPtr() const {return rightPtr;}
     
     bool isLeaf() const {return (leftPtr == 0 && rightPtr == 0);}
-}; 
-
+};
 
 #endif
