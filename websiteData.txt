@@ -13,14 +13,14 @@ United States
 Facebook
 12.41
 ---
-Youtube.com
+youtube.com
 United States
 3
 15
 Google
 4.51
 ---
-Yahoo.com
+yahoo.com
 United States
 4
 8
@@ -104,7 +104,7 @@ Japan
 Yahoo
 18.34
 ---
-Linkedin.com
+linkedin.com
 United States
 14
 7

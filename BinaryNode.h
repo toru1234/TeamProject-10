@@ -27,7 +27,7 @@ public:
     void setRightPtr(BinaryNode* right) {rightPtr = right;}
    
     // mutators
-   string getKey() const {return key;}
+    string getKey() const {return key;}
     Website getWebsite() const	 {return item;}
     BinaryNode* getLeftPtr() const  {return leftPtr;}
     BinaryNode* getRightPtr() const {return rightPtr;}

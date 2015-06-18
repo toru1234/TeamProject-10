@@ -152,25 +152,32 @@ void RunOption::caseDelete()
     cout << "Do you want to remove the data by name or nationality? N for name, T for nationality:";
     char deleteChoice;
     cin >> deleteChoice;
-    if (toupper(deleteChoice == 'N'))
+    if (toupper(deleteChoice) == 'N')
     {
         cout << "Please enter the name of the website:";
         string deleteWebName;
         cin >> deleteWebName;       //get a delete key
-        Website deleteWeb;
+        vector<Website> deleteWeb;
         cout << "Deleting the websites......\n";
         sleepFor();     //sleep for a second
-        uniqueTree->removeAll(deleteWebName);   //delete it if it's found
-        cout << "Delete done!" << endl;
+       uniqueTree->removeAll(deleteWebName, deleteWeb);   //delete it if it's found
+        // also delete another tree
+       secondaryKeyTree->removeSingle(deleteWeb[0].getNationality());
+       cout << "Delete done!" << endl;
     }
     
-    else if (toupper(deleteChoice == 'T'))
+    else if (toupper(deleteChoice) == 'T')
     {
         cout << "Please enter the nationality of the website:";
         string deleteWebNationality;
         cin >> deleteWebNationality;    //get a delete key
-        Website deleteWeb(deleteWebNationality);
-        secondaryKeyTree->removeAll(deleteWebNationality);
+        vector<Website> deleteWeb;
+        secondaryKeyTree->removeAll(deleteWebNationality, deleteWeb);
+       // also delete another tree
+       for (int i = 0; i < deleteWeb.size(); ++i)
+       {
+          uniqueTree->removeSingle(deleteWeb[i].getName());
+       }
         
         cout << "Delete done!" << endl;
     }
@@ -253,7 +260,7 @@ void RunOption::caseWriteFile()
  *************************************************/
 bool RunOption::outputFileValidation(ofstream &outputFile)
 {
-    string outputFileName = "Web_Data_Out.txt";
+    string outputFileName = "/Users/TingtingWang/Documents/TeamProject-10/Web_Data_Out.txt";
     outputFile.open(outputFileName.c_str());
     if (!outputFile.is_open())
     {
@@ -309,13 +316,12 @@ void RunOption::caseSearch()
                 cout <<"Please enter the name of the country that you want to search: ";
                 string secondaryKey;
                 cin >> secondaryKey;    // get a search key
-                Website targetWebsite;
                 vector<Website> aquiredWebsite;
-                cout << "Searing the websites......";
+                cout << "Searing the websites......" << endl;
                 sleepFor();     //sleep for a second
-                if (uniqueTree->getEntry(secondaryKey, aquiredWebsite))
+                if (secondaryKeyTree->getEntry(secondaryKey, aquiredWebsite))
                 {
-                    // idsplay all searched items
+                    // display all searched items
                     for (int i = 0; i < aquiredWebsite.size(); ++i)
                     {
                         display(aquiredWebsite[i]); //show all the data that's matched with the search key
@@ -375,7 +381,7 @@ void RunOption::caseList()
             case 'P': // alphabetical
                 cout << "Sorted by the name of the website:" << endl;
                 // call printBST tree.
-                uniqueTree->preOrder(display);
+                uniqueTree->inOrder(display);
                 break;
                 
             case 'O': // countries
@@ -426,7 +432,7 @@ void RunOption::sleepFor(int seconds){
 bool RunOption::getData()
 {
     // TODO**************************change name back
-    ifstream input("websiteData.txt");
+    ifstream input("/Users/TingtingWang/Documents/TeamProject-10/websiteData.txt");
     if(input.fail())
     {
         cout << "Cannot open websiteData.txt!" << endl;
@@ -443,7 +449,7 @@ bool RunOption::getData()
     //....
     
     //allocate the hashtable, size is 30 for now, with bucket size of 3
-    hashTable = new Hash_Table(30,3);
+    hashTable = new Hash_Table(16,3);
     
     string holdData;
     

@@ -14,28 +14,36 @@ bool BinarySearchTree::insert(string key, const Website & newEntry)
 }
 
 
-bool BinarySearchTree::remove(const string key)
+bool BinarySearchTree::removeAll(const string key, vector<Website> &deleteWeb)
 {
    bool isSuccessful = false;
-   this->rootPtr = _remove(this->rootPtr, key, isSuccessful);
-   // drcrease count
-   if (isSuccessful)
+   do
    {
-      this->count --;
-   }
+      this->rootPtr = _remove(this->rootPtr, key, isSuccessful);
+      deleteWeb.push_back(this->rootPtr->getWebsite());
+      // decrease count
+      if (isSuccessful)
+      {
+         this->count --;
+      }
+      this->rootPtr = this->rootPtr->getRightPtr();
+   }while(this->rootPtr->getRightPtr()->getKey() == key);
+  
    return isSuccessful;
 }
 
-void BinarySearchTree::removeAll(const string key)
+bool BinarySearchTree::removeSingle(const string key)
 {
-   if (remove(key))
-   {
-      remove(key);
-   }
-   
+   bool isSuccessful = false;
+    this->rootPtr = _remove(this->rootPtr, key, isSuccessful);
+      // decrease count
+      if (isSuccessful)
+      {
+         this->count --;
+      }
+   return isSuccessful;
 }
-
-bool BinarySearchTree::getEntry(const string key, vector<Website> returnedItems) const
+bool BinarySearchTree::getEntry(const string key, vector<Website> &returnedItems) const
 {
    // check if the entry is valid
    if (findNode(this->rootPtr, key) == 0)
@@ -43,12 +51,18 @@ bool BinarySearchTree::getEntry(const string key, vector<Website> returnedItems)
       return false;
    }
    else
-   {
-      returnedItems.push_back(findNode(this->rootPtr, key) ->getWebsite());
+  {
+      BinaryNode *entryNode = findNode(this->rootPtr, key);
+      returnedItems.push_back(entryNode ->getWebsite());
+     entryNode = entryNode->getRightPtr();
+     while(entryNode->getKey() == key)
+     {
+        returnedItems.push_back(entryNode->getWebsite());
+     }
+      
       return true;
    }
 }
-
 
 
 //////////////////////////// private functions ////////////////////////////////////////////
