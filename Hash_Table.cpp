@@ -1,4 +1,5 @@
 
+#include "Hash_Table.h"
 /*******************************************
  default constructor
  default constructor
@@ -93,6 +94,32 @@ int Hash_Table::getKey(const string &input) const
         sum += input[i];
     }
     return sum % tablesize;
+}
+
+/*******************************************
+ deleteItem function
+ this function searches the key in the hash
+ table. If the key is found in table, return
+ true otherwise, return false
+ *******************************************/
+bool Hash_Table::deleteItem(const string &strkey)
+{
+    int key = getKey(strkey);
+    
+    for(int i = 0; i < table[key].count; i++)
+    {
+        //if the strkey matches the "key" in the bucket, replace it with the following items
+        if(strkey == table[key].bucket[i].getName())
+        {
+            for(int j = i; j <table[key].count; j++)
+            {
+                table[key].bucket[j] = table[key].bucket[j + 1];
+            }
+            table[key].count--;
+            return true;
+        }
+    }
+    return false;
 }
 /*******************************************
  insert function
