@@ -44,7 +44,8 @@ public:
     // abstract functions to be implemented by derived class
     virtual bool insert(const string inputString, const Website & newData) = 0;
     virtual bool remove(const string key) = 0;
-    virtual bool getEntry(const string key, vector<Website> returnedItems) const = 0;
+    virtual bool getEntry(const string key, vector<Website>& returnedItems) const = 0;
+    
     BinaryNode* searchInRange(const Website & minRange, const Website & maxRange) const;
     
 private:
