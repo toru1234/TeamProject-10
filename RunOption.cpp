@@ -1,4 +1,3 @@
-
 /*********************************
  funtion declarition for RunOption.
  **********************************/
@@ -29,6 +28,7 @@ void RunOption::run()
     
     buildTrees();
     
+    //  string input;
     char choice;
     bool quit = false;
     cout << "Welcome! Our program is about the popular websites all around the world." << endl;
@@ -43,6 +43,7 @@ void RunOption::run()
         << "H - Statistics\n"
         << "Q - Quit\n";
         
+        cin.clear();
         cin >> choice;
         choice = toupper(choice);
         cout << endl;
@@ -75,10 +76,11 @@ void RunOption::run()
         }
     } while (!quit);
     
-    if (choice == 'Q')
-    {
-        cout << "Thank you for using our program. Have a nice day!" << endl;
-    }
+    // Dwyer: no if statement necessary; will only run once loop ends
+    //    if (choice == 'Q')
+    //    {
+    cout << "Thank you for using our program. Have a nice day!" << endl;
+    //    }
 }
 
 /*************************************************
@@ -89,7 +91,7 @@ void RunOption::buildTrees()
     Website* hashTableItem;
     uniqueTree = new BinarySearchTree;
     secondaryKeyTree = new BinarySearchTree;
-
+    
     for (int i = 0; i < hashTable->getTableSize(); ++i) //loop for the table size
     {
         for (int j = 0; j < hashTable->getHash_Entry()[i].count; ++j) //loop for the counter in each element of the table
@@ -109,6 +111,10 @@ void RunOption::caseAdd()
     cout << "Please enter the name of the website that you want to add:";
     string newWebString;
     cin >> newWebString;
+    
+    for(int i = 0; i < newWebString.size(); i++)
+        newWebString[i] = tolower(newWebString[i]); // Dwyer: lowercase for consistency & searching
+    
     cout << "Please enter the nationality of the website:";
     string newCopuntryString;
     cin >> newCopuntryString;
@@ -152,19 +158,30 @@ void RunOption::caseDelete()
     cout << "Do you want to remove the data by name or nationality? N for name, T for nationality:";
     char deleteChoice;
     cin >> deleteChoice;
-    if (toupper(deleteChoice == 'N'))
+    if (toupper(deleteChoice) == 'N')
     {
         cout << "Please enter the name of the website:";
         string deleteWebName;
         cin >> deleteWebName;       //get a delete key
+        
+        for(int i = 0; i < deleteWebName.size(); i++)
+            deleteWebName[i] = tolower(deleteWebName[i]); // Dwyer: urls are lowercase, makes sure inputting GOOGLE.COM will work
+        
         Website deleteWeb;
+        cout << endl << deleteWebName << endl;
         cout << "Deleting the websites......\n";
         sleepFor();     //sleep for a second
-        uniqueTree->removeAll(deleteWebName);   //delete it if it's found
-        cout << "Delete done!" << endl;
+        if(hashTable->deleteItem(deleteWebName))
+            cout << "Delete done for hash table." << endl;
+        else
+            cout << "not found in hash table!" << endl;
+        if(uniqueTree->remove(deleteWebName))   //delete it if it's found
+            cout << "Delete done!" << endl;
+        else
+            cout << "not found!\n";
     }
     
-    else if (toupper(deleteChoice == 'T'))
+    else if (toupper(deleteChoice) == 'T')
     {
         cout << "Please enter the nationality of the website:";
         string deleteWebNationality;
@@ -198,7 +215,9 @@ void RunOption::caseWriteFile()
 {
     cout << "Do you want to write the file by its name or nationality? N for name and T for nationality:";
     char writeFileChar;
+    cin.clear();
     cin >> writeFileChar;       //get a choice
+    writeFileChar = toupper(writeFileChar);
     if (toupper(writeFileChar) == 'N')
     {
         // Open output file
@@ -213,13 +232,15 @@ void RunOption::caseWriteFile()
         
         sleepFor();     //sleep for a second
         
-        for (auto p : outputFile){
+        for (auto p : outputFile)
+        {
             outputFileByUnique << p;    //writing the data to the file
         }
         cout << "Out put file Web_Data_Out.txt done!" << endl;
+        outputFileByUnique.close();
         
     }
-    else if (toupper(writeFileChar == 'T'))
+    else if (toupper(writeFileChar) == 'T')
     {
         // Open output file
         ofstream outputFileBySecondary;
@@ -238,6 +259,7 @@ void RunOption::caseWriteFile()
             outputFileBySecondary << p; //wrting the data to the file
         }
         cout << "Out put file Web_Data_Out.txt done!" << endl << endl;
+        outputFileBySecondary.close();
     }
     else
     {
@@ -276,6 +298,7 @@ void RunOption::caseSearch()
         << "N - Search website data for given domain name\n"
         << "C - Search websites by country\n"
         << "R - Return to previous menu\n" << endl;
+        cin.clear();
         cin >> subChoice;       //get a choice
         subChoice = toupper(subChoice);
         cout << endl;
@@ -285,8 +308,13 @@ void RunOption::caseSearch()
             case 'N': // domain name
             {
                 cout << "Please enter the name of the website you want to search: ";
+                cin.clear();
                 string primarykey;
                 cin >> primarykey;  //get a search key
+                
+                for(int i = 0; i < primarykey.size(); i++)
+                    primarykey[i] = tolower(primarykey[i]); // urls in lowercase
+                
                 cout << "Searing the website......";
                 sleepFor();     //sleep for a second
                 Website* targetWebsite;
@@ -353,6 +381,8 @@ void RunOption::caseList()
         << "O - display by countries\n"
         << "I - display special\n"
         << "R - Return to previous menu\n" << endl;
+        
+        cin.clear();
         cin >> subChoice;   //get a choice
         subChoice = toupper(subChoice);
         cout << endl;
@@ -411,11 +441,33 @@ void RunOption::caseList()
 void RunOption::sleepFor(int seconds){
     clock_t endwait;
     endwait = clock() +
-              seconds +
-              CLOCKS_PER_SEC;
+    seconds +
+    CLOCKS_PER_SEC;
     while(clock() < endwait);
 }
-
+/*************************************************
+ This function finds the next prime number.
+ *************************************************/
+int RunOption::getNextPrimeNumber(int num)
+{
+    while(true)
+    {
+        num++;
+        bool prime = true;
+        for(int i = 2; i < num / 2 && prime == true; i++)
+        {
+            if(num % i == 0)
+            {
+                prime = false;
+            }
+        }
+        
+        if(prime == true)
+        {
+            return num;
+        }
+    }
+}
 /*************************************************
  HashTable getData function initialize the size of
  the hash table and read the data from the file.
@@ -440,7 +492,7 @@ bool RunOption::getData()
     //....
     
     //allocate the hashtable, size is 30 for now, with bucket size of 3
-    hashTable = new Hash_Table(30,3);
+    hashTable = new Hash_Table(getNextPrimeNumber(numOfData * 2),3);
     
     string holdData;
     
