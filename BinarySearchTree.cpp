@@ -1,4 +1,3 @@
-
 #include "BinarySearchTree.h"
 
 
@@ -29,23 +28,23 @@ bool BinarySearchTree::remove(const string key)
 
 void BinarySearchTree::removeAll(const string key)
 {
-   if (remove(key))
-   {
-      remove(key);
-   }
-   
+    if (remove(key))
+    {
+        remove(key);
+    }
+    
 }
 
-bool BinarySearchTree::getEntry(const Website& anEntry, Website & returnedItem) const
+bool BinarySearchTree::getEntry(const string key, vector<Website> & returnedItems) const
 {
     // check if the entry is valid
-    if (findNode(this->rootPtr, anEntry) == 0)
+    if (findNode(this->rootPtr, key) == 0)
     {
         return false;
     }
     else
     {
-        returnedItem = findNode(this->rootPtr, anEntry)->getWebsite();
+        returnedItems.push_back(findNode(this->rootPtr, key) ->getWebsite());
         return true;
     }
 }
@@ -142,7 +141,7 @@ BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr, Website & 
 }
 
 
-BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr, const Website & target) const
+BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr, const string key) const
 {
     // tree is empty
     if (nodePtr == 0)
@@ -152,15 +151,20 @@ BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr, const Website & targ
     
     // tree is not empty
     // Iterate through the tree
-    else if (nodePtr->getWebsite() > target)
+    else if (nodePtr->getKey() > key)
     {
-        return findNode(nodePtr->getLeftPtr(), target);
+        return findNode(nodePtr->getLeftPtr(), key);
     }
-    else if (nodePtr->getWebsite() < target)
+    else if (nodePtr->getKey() < key)
     {
-        return findNode(nodePtr->getRightPtr(), target);
+        return findNode(nodePtr->getRightPtr(), key);
     }
-    return nodePtr;
+    else{
+        if (nodePtr->getRightPtr()->getKey() == key)
+            return findNode(nodePtr->getRightPtr(), key);
+        else
+            return nodePtr;
+    }
 }
 
 bool BinarySearchTree::getHighestKeyItem(Website & largestItem) const
