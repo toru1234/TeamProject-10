@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string>
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -56,7 +57,6 @@ public:
     }
    
    
-   // TODO*************** do we need these operator? 
     bool operator > (const Website& right) const{
         return (this->name > right.getName() ? true: false);
     }
@@ -77,12 +77,22 @@ public:
         return (this->name <= right.getName() ? true: false);
     }
     
-    friend ostream& operator << (ostream& os, const Website& web) {
-        os << web.getName() << " " << web.getNationality() << " "
-        << web.getGlobalRank() << " " << web.getAvgTime_OnSite() << " "
-        << web.getOwner() << " " << web.getAvgview_perVisitor() << endl;
-        return os;
-    }
+  friend ostream& operator << (ostream& os, const Website& web)
+   {
+      os << setw(22) << left;
+      os << "Domain Name: " << web.getName() << endl;
+      os << setw(22) << left;
+      os << "Nationality: " << web.getNationality() << endl;
+      os << setw(22) << left;
+      os << "Rank: " << web.getGlobalRank() << endl;
+      os << setw(22) << left;
+      os << "Average Time on Site: " << web.getAvgTime_OnSite() << endl;
+      os << setw(22) << left;
+      os << "Owner: " << web.getOwner() << endl;
+      os << setw(22) << left;
+      os << "Average View: "  << web.getAvgview_perVisitor() << endl;
+      return os;
+   }
 };
 
 

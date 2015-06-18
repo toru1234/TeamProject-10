@@ -172,7 +172,7 @@ void BinaryTree::_printTreeIndented(BinaryNode* nodePtr, int depth) const
     {
         cout << "\t";
     }
-    cout << depth << "." << nodePtr->getWebsite() << endl;
+    cout << depth << "." << nodePtr->getWebsite().getName() << endl;
     // go to the left
     _printTreeIndented(nodePtr->getLeftPtr(), depth + 1);
 }

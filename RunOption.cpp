@@ -396,8 +396,7 @@ void RunOption::caseList()
         cout << "U - display unsorted\n"
         << "P - display by domain name\n"
         << "O - display by countries\n"
-        << "I - display special\n"
-        << "R - Return to previous menu\n" << endl;
+       << "I - display special\n" << endl;
         cin >> subChoice;   //get a choice
         subChoice = toupper(subChoice);
         cout << endl;
