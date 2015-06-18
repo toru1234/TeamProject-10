@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <ctime>
 #include "BinarySearchTree.h"
 #include "Hash_Table.h"
 
@@ -27,6 +28,7 @@ private:
     void caseDelete();
     void caseWriteFile();
     void caseStatistic();
+    int getNextPrimeNumber(int num);
 public:
     // default consturctor
     RunOption(){uniqueTree = secondaryKeyTree = 0; fileName = "";}
@@ -45,6 +47,7 @@ public:
     
     // Runs the main functionality of RunOption
     void run();
+    
     
     // output file validation
     bool outputFileValidation(ofstream &outputFile);
