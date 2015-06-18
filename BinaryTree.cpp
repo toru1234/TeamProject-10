@@ -176,3 +176,4 @@ void BinaryTree::_printTreeIndented(BinaryNode* nodePtr, int depth) const
     // go to the left
     _printTreeIndented(nodePtr->getLeftPtr(), depth + 1);
 }
+
