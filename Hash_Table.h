@@ -50,8 +50,10 @@ public:
     // getters for the hash size and the table size
     int getTableSize() const {return tablesize;}
     int getBucketSize() const {return bucketsize;}
+   
     
     bool insert(const Website &input);
+    bool deleteItem(const string &strkey);
     void PrintTable() const;
     void displayList() const;
     void showStatistics() const;

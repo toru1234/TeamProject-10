@@ -33,7 +33,10 @@ public:
     
     // print function
     static void display(Website &web);
-    
+   
+    int getNextPrimeNumber(int num);
+
+   
     // constructor
     RunOption(string inputFileName){uniqueTree = 0; secondaryKeyTree = 0; fileName = inputFileName;}
     

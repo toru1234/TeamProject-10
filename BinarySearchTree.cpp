@@ -14,35 +14,28 @@ bool BinarySearchTree::insert(string key, const Website & newEntry)
 }
 
 
-bool BinarySearchTree::removeAll(const string key, vector<Website> &deleteWeb)
+bool BinarySearchTree::removeAll(const string key)
+{
+   if (remove(key))
+   {
+      remove(key);
+      return true;
+   }
+   return false;
+}
+
+bool BinarySearchTree::remove(const string key)
 {
    bool isSuccessful = false;
-   do
+   this->rootPtr = _remove(this->rootPtr, key, isSuccessful);
+   // drcrease count
+   if (isSuccessful)
    {
-      this->rootPtr = _remove(this->rootPtr, key, isSuccessful);
-      deleteWeb.push_back(this->rootPtr->getWebsite());
-      // decrease count
-      if (isSuccessful)
-      {
-         this->count --;
-      }
-      this->rootPtr = this->rootPtr->getRightPtr();
-   }while(this->rootPtr->getRightPtr()->getKey() == key);
-  
+      this->count --;
+   }
    return isSuccessful;
 }
 
-bool BinarySearchTree::removeSingle(const string key)
-{
-   bool isSuccessful = false;
-    this->rootPtr = _remove(this->rootPtr, key, isSuccessful);
-      // decrease count
-      if (isSuccessful)
-      {
-         this->count --;
-      }
-   return isSuccessful;
-}
 bool BinarySearchTree::getEntry(const string key, vector<Website> &returnedItems) const
 {
    // check if the entry is valid
@@ -54,10 +47,11 @@ bool BinarySearchTree::getEntry(const string key, vector<Website> &returnedItems
   {
       BinaryNode *entryNode = findNode(this->rootPtr, key);
       returnedItems.push_back(entryNode ->getWebsite());
-     entryNode = entryNode->getRightPtr();
-     while(entryNode->getKey() == key)
+      entryNode = entryNode->getRightPtr();
+     while(findNode(entryNode, key)!= 0)
      {
-        returnedItems.push_back(entryNode->getWebsite());
+        returnedItems.push_back(findNode(entryNode, key)->getWebsite());
+         entryNode = findNode(entryNode, key)->getRightPtr();
      }
       
       return true;
@@ -89,24 +83,36 @@ BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr, BinaryNode* newNodePt
    return nodePtr;
 }
 
+
 BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr, const string key, bool & success)
 {
    if (nodePtr == 0)
    {
       success = false;
       return 0;
-   }
+   }   
    if (nodePtr->getKey() > key)
+      
       nodePtr->setLeftPtr(_remove(nodePtr->getLeftPtr(), key, success));
+   
    else if (nodePtr->getKey() < key)
+      
       nodePtr->setRightPtr(_remove(nodePtr->getRightPtr(), key, success));
+   
    else
+      
    {
+      
       nodePtr = deleteNode(nodePtr);
+      
       success = true;
+      
    }
+   
    return nodePtr;
+   
 }
+
 
 BinaryNode* BinarySearchTree::deleteNode(BinaryNode* nodePtr)
 {
@@ -161,8 +167,8 @@ BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr, const string key) co
    if (nodePtr == 0)
    {
       return 0;
+      
    }
-   
    // tree is not empty
    // Iterate through the tree
    else if (nodePtr->getKey() > key)

@@ -81,6 +81,30 @@ void RunOption::run()
     }
 }
 
+/*****************************************
+ Find the next prime number for declaring hash table
+ *************************************************/
+int RunOption::getNextPrimeNumber(int num)
+{
+   while(true)
+   {
+      num++;
+      bool prime = true;
+      for(int i = 2; i < num / 2 && prime == true; i++)
+      {
+         if(num % i == 0)
+         {
+            prime = false;
+         }
+      }
+      
+      if(prime == true)
+      {
+         return num;
+      }
+   }
+}
+
 /*************************************************
  // build trees functions, passed the hash table in.
  *************************************************/
@@ -148,45 +172,57 @@ void RunOption::caseAdd()
  *************************************************/
 void RunOption::caseDelete()
 {
-    // call tree delete function
-    cout << "Do you want to remove the data by name or nationality? N for name, T for nationality:";
-    char deleteChoice;
-    cin >> deleteChoice;
-    if (toupper(deleteChoice) == 'N')
-    {
-        cout << "Please enter the name of the website:";
-        string deleteWebName;
-        cin >> deleteWebName;       //get a delete key
-        vector<Website> deleteWeb;
-        cout << "Deleting the websites......\n";
-        sleepFor();     //sleep for a second
-       uniqueTree->removeAll(deleteWebName, deleteWeb);   //delete it if it's found
-        // also delete another tree
-       secondaryKeyTree->removeSingle(deleteWeb[0].getNationality());
-       cout << "Delete done!" << endl;
-    }
-    
-    else if (toupper(deleteChoice) == 'T')
-    {
-        cout << "Please enter the nationality of the website:";
-        string deleteWebNationality;
-        cin >> deleteWebNationality;    //get a delete key
-        vector<Website> deleteWeb;
-        secondaryKeyTree->removeAll(deleteWebNationality, deleteWeb);
-       // also delete another tree
-       for (int i = 0; i < deleteWeb.size(); ++i)
-       {
-          uniqueTree->removeSingle(deleteWeb[i].getName());
-       }
-        
-        cout << "Delete done!" << endl;
-    }
-    
-    else
-    {
-        cout << "Invalid input!" << endl;
-    }
-    
+   string getChoice;
+   // call tree delete function
+   cout << "Do you want to remove the data by name or nationality? N for name, T for nationality: ";
+   char deleteChoice;
+   cin.ignore();
+   getline(cin,getChoice);
+   deleteChoice = toupper(getChoice[0]);
+   if (deleteChoice == 'N')
+   {
+      cout << "Please enter the name of the website:";
+      string deleteWebName;
+      getline(cin,deleteWebName);       //get a delete key
+      for(int i = 0; i < deleteWebName.size(); i++)
+      {
+         deleteWebName[i] = tolower(deleteWebName[i]);
+
+      }
+      
+      Website deleteWeb;
+      cout << "Deleting the websites......\n";
+      sleepFor();     //sleep for a second
+      if(uniqueTree->remove(deleteWebName))   //delete it if it's found
+      {
+         cout << "Delete done!" << endl;
+      }
+      hashTable->deleteItem(deleteWebName);
+   }
+   else if (deleteChoice == 'T')
+   {
+      cout << "Please enter the nationality of the website:";
+      
+      string deleteWebNationality;
+      
+      getline(cin,deleteWebNationality);    //get a delete key
+      
+      for(int i = 0; i < deleteWebNationality.size(); i++)
+      {
+         deleteWebNationality[i] = tolower(deleteWebNationality[i]);
+
+      }
+      Website deleteWeb(deleteWebNationality);
+      
+      hashTable->deleteItem(deleteWebNationality);
+   }
+   
+   else
+   {
+      cout << "Invalid input!" << endl;
+   }
+   cout << endl;
+   
 }
 
 /*************************************************
@@ -317,7 +353,7 @@ void RunOption::caseSearch()
                 string secondaryKey;
                 cin >> secondaryKey;    // get a search key
                 vector<Website> aquiredWebsite;
-                cout << "Searing the websites......" << endl;
+                cout << "Searching the websites......" << endl;
                 sleepFor();     //sleep for a second
                 if (secondaryKeyTree->getEntry(secondaryKey, aquiredWebsite))
                 {
@@ -373,11 +409,9 @@ void RunOption::caseList()
                 cout << "Shuffling......";
                 sleepFor();     //sleep for a second
                 // call shuffle in case the data has already been sorted.
-                /*********************************TODO:
-                 make a vector and push all items in. shuffle the vector and print the vector
-                 ****************************/
-                
-                break;
+                hashTable->PrintTable();
+                cout << endl;
+               break;
             case 'P': // alphabetical
                 cout << "Sorted by the name of the website:" << endl;
                 // call printBST tree.
@@ -449,8 +483,8 @@ bool RunOption::getData()
     //....
     
     //allocate the hashtable, size is 30 for now, with bucket size of 3
-    hashTable = new Hash_Table(16,3);
-    
+   hashTable = new Hash_Table(getNextPrimeNumber(numOfData * 2),3);
+   
     string holdData;
     
     for(int i = 0; i < numOfData; i++)

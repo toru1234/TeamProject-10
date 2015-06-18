@@ -136,6 +136,30 @@ bool Hash_Table::insert(const Website &input)
 
 
 /*******************************************
+ deleteItem function
+ delete the target item
+ *******************************************/
+bool Hash_Table::deleteItem(const string &strkey)
+{
+   int key = getKey(strkey);
+   
+   for(int i = 0; i < table[key].count; i++)
+   {
+      //if the strkey matches the "key" in the bucket, replace it with the following items
+      if(strkey == table[key].bucket[i].getName())
+      {
+         for(int j = i; j <table[key].count; j++)
+         {
+            table[key].bucket[j] = table[key].bucket[j + 1];
+         }
+         table[key].count--;
+         return true;
+      }
+   }
+   return false;
+}
+
+/*******************************************
  Printable function
  print the index and indent synonyms
  *******************************************/
