@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string>
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -18,17 +19,18 @@ private:
     string owner;                     //the name of the company or foundation that owns this website
     float Avg_dailyView_perVisitor;       //the average daily view per visitor
 public:
-   // constructor with arguments
-   Website(string name = "", string nationality = "", unsigned int global = 0, unsigned int time = 0, string owner = "", float visitor = 0.0)
-   {
-      this->name = name;
-      this->nationality = nationality;
-      this->global_rank = global;
-      this->Avg_dailyTime_onSite = time;
-      this->owner = owner;
-      this->Avg_dailyView_perVisitor = visitor;
-   }
- 
+    //constructor(default)
+    
+    // constructor with arguments
+    Website(string name = "", string nationality = "", unsigned int global = 0, unsigned int time = 0, string owner = "", float visitor = 0.0)
+    {
+        this->name = name;
+        this->nationality = nationality;
+        this->global_rank = global;
+        this->Avg_dailyTime_onSite = time;
+        this->owner = owner;
+        this->Avg_dailyView_perVisitor = visitor;
+    }
     //setters
     void setName(string str){name = str;}
     void setNationality(string str){nationality = str;}
@@ -54,9 +56,7 @@ public:
         this->Avg_dailyView_perVisitor = right.getAvgview_perVisitor();
         return *this;
     }
-   
-   
-   // TODO*************** do we need these operator? 
+    
     bool operator > (const Website& right) const{
         return (this->name > right.getName() ? true: false);
     }
@@ -78,9 +78,20 @@ public:
     }
     
     friend ostream& operator << (ostream& os, const Website& web) {
-        os << web.getName() << " " << web.getNationality() << " "
-        << web.getGlobalRank() << " " << web.getAvgTime_OnSite() << " "
-        << web.getOwner() << " " << web.getAvgview_perVisitor() << endl;
+        if(web.getName() != ""){
+            os << setw(22) << left;
+            os << "Domain Name: " << web.getName() << endl;
+            os << setw(22) << left;
+            os << "Nationality: " << web.getNationality() << endl;
+            os << setw(22) << left;
+            os << "Rank: " << web.getGlobalRank() << endl;
+            os << setw(22) << left;
+            os << "Average Time on Site: " << web.getAvgTime_OnSite() << endl;
+            os << setw(22) << left;
+            os << "Owner: " << web.getOwner() << endl;
+            os << setw(22) << left;
+            os << "Average View: "  << web.getAvgview_perVisitor() << endl;
+        }
         return os;
     }
 };
