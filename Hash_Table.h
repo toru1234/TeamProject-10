@@ -14,16 +14,14 @@ using namespace std;
 class Hash_Table
 {
 private:
-    //record the size of the table
-    int tablesize;
-    //record the size of the bucket
-    int bucketsize;
-    //record the number of collisions
-    int collisions;
-    //record the number of loaded buckets
-    int load;
-    //record the number of full buckets
-    int fullBuckets;
+    int tablesize;  //record the size of the table
+    int bucketsize;  //record the size of the bucket
+    
+    int collisions;  //record the number of collisions
+    
+    int load;   //record the number of loaded buckets
+    int fullBuckets;    //record the number of full buckets
+    
     
     struct Hash_Entry
     {
@@ -53,11 +51,12 @@ public:
     int getTableSize() const {return tablesize;}
     int getBucketSize() const {return bucketsize;}
     
-    bool insert(const Website &input);
+    
+    bool insert(Website input);
+    bool deleteItem(const string &strkey);
     void PrintTable() const;
     void displayList() const;
     void showStatistics() const;
-    bool deleteItem(const string &strkey);
     Website* getHashItem(int tableIndex, int bucketIndex) const;
 };
 
