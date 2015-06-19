@@ -52,8 +52,8 @@ void BinaryTree::destroyTree(BinaryNode* nodePtr)
 }
 
 void BinaryTree::inOrder(void visit(Website &),
-                         const Website & minItem,
-                         const Website & maxItem) const
+                         Website* minItem,
+                         Website* maxItem) const
 {
     _inorder(visit, rootPtr, minItem, maxItem);
 }
@@ -64,8 +64,8 @@ void BinaryTree::_preorder(void visit(Website &), BinaryNode* nodePtr) const
     // root-left-right
     if (nodePtr != 0)
     {
-        Website web = nodePtr->getWebsite();
-        visit(web);
+        Website* web = nodePtr->getWebsite();
+        visit(*web);
         _preorder(visit, nodePtr->getLeftPtr());
         _preorder(visit, nodePtr->getRightPtr());
     }
@@ -79,8 +79,8 @@ void BinaryTree::_inorder(void visit(Website &), BinaryNode* nodePtr) const
         return;
     }
     _inorder(visit, nodePtr->getLeftPtr());
-    Website web = nodePtr->getWebsite();
-    visit(web);
+    Website* web = nodePtr->getWebsite();
+    visit(*web);
     _inorder(visit, nodePtr->getRightPtr());
 }
 
@@ -93,8 +93,8 @@ void BinaryTree::_writeUniqueKeyinFile(BinaryNode* nodePtr,vector<Website>& outp
         return;
     }
     _writeUniqueKeyinFile(nodePtr->getLeftPtr(), outputFile);
-    Website web = nodePtr->getWebsite();
-    outputFile.push_back(web);
+    Website* web = nodePtr->getWebsite();
+    outputFile.push_back(*web);
     _writeUniqueKeyinFile(nodePtr->getRightPtr(), outputFile);
 }
 
@@ -106,14 +106,14 @@ void BinaryTree::_writeSecondaryKeyinFile(BinaryNode* nodePtr,vector<Website>& o
         return;
     }
     _writeSecondaryKeyinFile(nodePtr->getLeftPtr(), outputFile);
-    Website web = nodePtr->getWebsite();
-    outputFile.push_back(web);
+    Website* web = nodePtr->getWebsite();
+    outputFile.push_back(*web);
     _writeSecondaryKeyinFile(nodePtr->getRightPtr(), outputFile);
 }
 void BinaryTree::_inorder(void visit(Website &),
                           BinaryNode* nodePtr,
-                          const Website & minItem,
-                          const Website & maxItem) const
+                          Website* minItem,
+                          Website* maxItem) const
 {
     // Node is null
     if (nodePtr == 0)
@@ -122,14 +122,14 @@ void BinaryTree::_inorder(void visit(Website &),
     }
     
     // Node is outside of desired range
-    Website currentItem = nodePtr->getWebsite();
-    if (currentItem < minItem || currentItem > maxItem)
+    Website* currentItem = nodePtr->getWebsite();
+    if (*currentItem < *minItem || *currentItem > *maxItem)
     {
         return;
     }
     
     _inorder(visit, nodePtr->getLeftPtr(), minItem, maxItem);
-    visit(currentItem);
+    visit(*currentItem);
     _inorder(visit, nodePtr->getRightPtr(), minItem, maxItem);
 }
 
@@ -142,8 +142,8 @@ void BinaryTree::_postorder(void visit(Website &), BinaryNode* nodePtr) const
     }
     _postorder(visit, nodePtr->getLeftPtr());
     _postorder(visit, nodePtr->getRightPtr());
-    Website web = nodePtr->getWebsite();
-    visit(web);
+    Website* web = nodePtr->getWebsite();
+    visit(*web);
 }
 
 BinaryTree & BinaryTree::operator= (const BinaryTree & sourceTree)
@@ -167,13 +167,13 @@ void BinaryTree::_printTreeIndented(BinaryNode* nodePtr, int depth) const
         return;
     }
     // go to the right
+    
     _printTreeIndented(nodePtr->getRightPtr(), depth + 1);
     for (int i = depth-1; i > 0; --i)
     {
         cout << "\t";
     }
-    cout << depth << "." << nodePtr->getWebsite() << endl;
+    cout << depth << "." << nodePtr->getWebsite()->getName() << endl;
     // go to the left
     _printTreeIndented(nodePtr->getLeftPtr(), depth + 1);
 }
-
