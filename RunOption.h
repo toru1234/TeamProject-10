@@ -27,6 +27,8 @@ private:
     void caseDelete();
     void caseWriteFile();
     void caseStatistic();
+    void welcomeMessage();
+    void farawellMessage();
 public:
     // default consturctor
     RunOption(){uniqueTree = secondaryKeyTree = 0; fileName = "";}
