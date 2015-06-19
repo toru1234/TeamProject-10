@@ -1,11 +1,10 @@
 
 #include "BinaryTree.h"
 
-//------------------------------------
-
-
-
-
+/************************************************
+ Constructor with one parameter. this is a copy
+ constructor
+ *************************************************/
 BinaryTree::BinaryTree(const BinaryTree & tree)
 {
     // check if the tree is valid
@@ -20,6 +19,11 @@ BinaryTree::BinaryTree(const BinaryTree & tree)
         rootPtr = copyTree(tree.rootPtr);
     }
 }
+
+/************************************************
+ copyTree function. this function copies all the
+ nodes in the BSTs
+ *************************************************/
 
 BinaryNode* BinaryTree::copyTree(const BinaryNode* nodePtr)
 {
@@ -38,7 +42,10 @@ BinaryNode* BinaryTree::copyTree(const BinaryNode* nodePtr)
     }
 }
 
-
+/************************************************
+ destroy function. this function destories all the
+ nodes in the tree
+ *************************************************/
 void BinaryTree::destroyTree(BinaryNode* nodePtr)
 {
     // left-root-right
@@ -51,6 +58,10 @@ void BinaryTree::destroyTree(BinaryNode* nodePtr)
     delete nodePtr;
 }
 
+/************************************************
+ inOrder function. this function traverses the 
+ within the range in order.
+ *************************************************/
 void BinaryTree::inOrder(void visit(Website &),
                          Website* minItem,
                          Website* maxItem) const
@@ -58,7 +69,10 @@ void BinaryTree::inOrder(void visit(Website &),
     _inorder(visit, rootPtr, minItem, maxItem);
 }
 
-
+/************************************************
+ _preOrder function. this function traverses all
+ the nodes in pre order
+ *************************************************/
 void BinaryTree::_preorder(void visit(Website &), BinaryNode* nodePtr) const
 {
     // root-left-right
@@ -71,6 +85,10 @@ void BinaryTree::_preorder(void visit(Website &), BinaryNode* nodePtr) const
     }
 }
 
+/************************************************
+ _inorder function. this function traverses all the
+ nodes in order
+ *************************************************/
 void BinaryTree::_inorder(void visit(Website &), BinaryNode* nodePtr) const
 {
     // left-root-right
@@ -84,32 +102,28 @@ void BinaryTree::_inorder(void visit(Website &), BinaryNode* nodePtr) const
     _inorder(visit, nodePtr->getRightPtr());
 }
 
-
-void BinaryTree::_writeUniqueKeyinFile(BinaryNode* nodePtr,vector<Website>& outputFile)
+/************************************************
+ _writeNodesinFile function. this function
+ writes the nodes in an output file using a 
+ vector
+ *************************************************/
+void BinaryTree::_writeNodesinFile(BinaryNode* nodePtr,vector<Website>& outputFile)
 {
     // left-root-right
     if (nodePtr == 0)
     {
         return;
     }
-    _writeUniqueKeyinFile(nodePtr->getLeftPtr(), outputFile);
+    _writeNodesinFile(nodePtr->getLeftPtr(), outputFile);
     Website* web = nodePtr->getWebsite();
     outputFile.push_back(*web);
-    _writeUniqueKeyinFile(nodePtr->getRightPtr(), outputFile);
+    _writeNodesinFile(nodePtr->getRightPtr(), outputFile);
 }
 
-void BinaryTree::_writeSecondaryKeyinFile(BinaryNode* nodePtr,vector<Website>& outputFile)
-{
-    // left-root-right
-    if (nodePtr == 0)
-    {
-        return;
-    }
-    _writeSecondaryKeyinFile(nodePtr->getLeftPtr(), outputFile);
-    Website* web = nodePtr->getWebsite();
-    outputFile.push_back(*web);
-    _writeSecondaryKeyinFile(nodePtr->getRightPtr(), outputFile);
-}
+/************************************************
+ _inOrder function. this function traverses all the
+ nodes within the range that user decided
+ *************************************************/
 void BinaryTree::_inorder(void visit(Website &),
                           BinaryNode* nodePtr,
                           Website* minItem,
@@ -133,6 +147,10 @@ void BinaryTree::_inorder(void visit(Website &),
     _inorder(visit, nodePtr->getRightPtr(), minItem, maxItem);
 }
 
+/************************************************
+ _postOrder function. this function traverses all
+ the nodes in post order
+ *************************************************/
 void BinaryTree::_postorder(void visit(Website &), BinaryNode* nodePtr) const
 {
     //left-right-root
@@ -146,6 +164,11 @@ void BinaryTree::_postorder(void visit(Website &), BinaryNode* nodePtr) const
     visit(*web);
 }
 
+/************************************************
+ overload operator =: this function assignes the
+ all the nodes from the left hand side to the right
+ hand side treee
+ *************************************************/
 BinaryTree & BinaryTree::operator= (const BinaryTree & sourceTree)
 {
     // clear data first(if the left object is not empty)
@@ -158,22 +181,32 @@ BinaryTree & BinaryTree::operator= (const BinaryTree & sourceTree)
     return *this;
 }
 
-
+/************************************************
+ _printTreeIndented function. this function writes
+ a tree figure that the actual tree looks like
+ *************************************************/
 void BinaryTree::_printTreeIndented(BinaryNode* nodePtr, int depth) const
 {
     // check if the node points to null.
-    if (nodePtr == 0)
+    if (nodePtr == 0 )
     {
         return;
     }
     // go to the right
     
     _printTreeIndented(nodePtr->getRightPtr(), depth + 1);
-    for (int i = depth-1; i > 0; --i)
-    {
-        cout << "\t";
+    if (nodePtr->getWebsite()->getName() != ""){
+        for (int i = depth-1; i > 0; --i)
+        {
+            
+            cout << "\t";
+        }
+        cout << depth << "." << nodePtr->getWebsite()->getName() << endl;
     }
-    cout << depth << "." << nodePtr->getWebsite()->getName() << endl;
-    // go to the left
+    else
+        depth--;
+        // go to the left
     _printTreeIndented(nodePtr->getLeftPtr(), depth + 1);
+    
+    
 }
