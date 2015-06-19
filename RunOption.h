@@ -1,4 +1,3 @@
-
 // This function will run the main menu and the function followed by the menu options.
 #ifndef RUNOPTION_H
 #define RUNOPTION_H
@@ -6,7 +5,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <ctime>
 #include "BinarySearchTree.h"
 #include "Hash_Table.h"
 
@@ -20,6 +18,7 @@ private:
     BinarySearchTree* secondaryKeyTree;
     Hash_Table* hashTable;
     vector<Website> outputFile;
+    vector<Website> aquiredWebsite;
     void sleepFor(int seconds = 1);
     bool getData();
     void caseSearch();
@@ -28,13 +27,15 @@ private:
     void caseDelete();
     void caseWriteFile();
     void caseStatistic();
-    int getNextPrimeNumber(int num);
 public:
     // default consturctor
     RunOption(){uniqueTree = secondaryKeyTree = 0; fileName = "";}
     
     // print function
     static void display(Website &web);
+    
+    int getNextPrimeNumber(int num);
+    
     
     // constructor
     RunOption(string inputFileName){uniqueTree = 0; secondaryKeyTree = 0; fileName = inputFileName;}
@@ -47,7 +48,6 @@ public:
     
     // Runs the main functionality of RunOption
     void run();
-    
     
     // output file validation
     bool outputFileValidation(ofstream &outputFile);
