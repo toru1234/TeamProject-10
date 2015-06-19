@@ -109,6 +109,7 @@ bool Hash_Table::insert(Website input)
     //if the bucket is full (count is greater than the bucketsize), return false
     if(table[key].count >= bucketsize)
     {
+        overflow.push_back(input); //for rejected items
         return false;
     }
     
@@ -151,9 +152,17 @@ bool Hash_Table::deleteItem(const string &strkey)
             {
                 table[key].bucket[j] = table[key].bucket[j + 1];
             }
+            if(table[key].count == bucketsize)
+                fullBuckets--;
             table[key].count--;
+            if(table[key].count == 0){
+                load--;
+            }
+            else
+                collisions--;
             return true;
         }
+        
     }
     return false;
 }
@@ -211,6 +220,12 @@ void Hash_Table::displayList() const
             cout << table[i].bucket[j].getName() << endl;
         }
     }
+    
+    if (!overflow.empty()){
+        cout << ":OverFlowAre:\n";
+        for (auto p : overflow)
+            cout << p << endl;
+    }
 }
 /*******************************************
  showStatistics function
@@ -219,7 +234,7 @@ void Hash_Table::displayList() const
 void Hash_Table::showStatistics() const
 {
     cout << "Collisions  : " << collisions << endl;
-    cout << "Load factor : " << static_cast<double>(load) / tablesize * 100 << "%" << endl;
+    cout << "Load factor : " << getLoadFactor() << "%" << endl;
     cout << "Full Bucket : " << fullBuckets << endl;
     cout << "Empty Bucket: " << tablesize - load << endl;
 }
