@@ -3,6 +3,10 @@
 
 ///////////////////////// public function definitions ///////////////////////////
 
+/************************************************
+insert function. this function inserts an item in
+ the tree and increments the count by 1
+ *************************************************/
 bool BinarySearchTree::insert(string key, Website* newEntry)
 {
     BinaryNode* newNodePtr = new BinaryNode(newEntry);
@@ -13,7 +17,10 @@ bool BinarySearchTree::insert(string key, Website* newEntry)
     return true;
 }
 
-
+/************************************************
+ removeAll function. this function removes all the
+ nodes that have the matched key
+ *************************************************/
 bool BinarySearchTree::removeAll(const string key)
 {
     if (remove(key))
@@ -23,7 +30,10 @@ bool BinarySearchTree::removeAll(const string key)
     }
     return false;
 }
-
+/************************************************
+ remove function. this function removes the
+ node that has the matched key
+ *************************************************/
 bool BinarySearchTree::remove(const string key)
 {
     bool isSuccessful = false;
@@ -35,7 +45,10 @@ bool BinarySearchTree::remove(const string key)
     }
     return isSuccessful;
 }
-
+/************************************************
+ getEntry function. this function removes all the
+ nodes that have the matched key
+ *************************************************/
 bool BinarySearchTree::getEntry(const string key, vector<Website> &returnedItems) const
 {
     // check if the entry is valid
@@ -60,6 +73,10 @@ bool BinarySearchTree::getEntry(const string key, vector<Website> &returnedItems
 
 
 //////////////////////////// private functions ////////////////////////////////////////////
+/************************************************
+ _insert function. this function inserts nodes
+ to the BSTs
+ *************************************************/
 
 BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr, BinaryNode* newNodePtr)
 {
@@ -83,7 +100,10 @@ BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr, BinaryNode* newNodePt
     return nodePtr;
 }
 
-
+/************************************************
+ _remove function. this function removes the
+ nodes that have the matched key
+ *************************************************/
 BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr, const string key, bool & success)
 {
     if (nodePtr == 0)
@@ -113,7 +133,10 @@ BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr, const string key, boo
     
 }
 
-
+/************************************************
+ delete function. this function actuallly deletes
+ nodes from the BSTs
+ *************************************************/
 BinaryNode* BinarySearchTree::deleteNode(BinaryNode* nodePtr)
 {
     if (nodePtr->isLeaf())
@@ -145,6 +168,10 @@ BinaryNode* BinarySearchTree::deleteNode(BinaryNode* nodePtr)
     }
 }
 
+/************************************************
+ removeLeftMostNode function. this function deletes
+ the most left node
+ *************************************************/
 BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr, Website* successor)
 {
     if (nodePtr->getLeftPtr() == 0)
@@ -160,7 +187,11 @@ BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr, Website* s
     }
 }
 
-
+/************************************************
+ find function. this function finds the
+ node(s) that have the matched key and returns the
+ pointer at the node
+ *************************************************/
 BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr, const string key) const
 {
     // tree is empty
@@ -182,6 +213,10 @@ BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr, const string key) co
     return nodePtr;
 }
 
+/************************************************
+ getHighestKeyItem function. this function finds
+ the highest key item of the BSTs
+ *************************************************/
 bool BinarySearchTree::getHighestKeyItem(Website* largestItem) const
 {
     // Return if the tree is empty
@@ -200,7 +235,10 @@ bool BinarySearchTree::getHighestKeyItem(Website* largestItem) const
     
     return true;
 }
-
+/************************************************
+ getLowestKeyItem function. this function finds
+ the lowest node of the BSTs
+ *************************************************/
 bool BinarySearchTree::getLowestKeyItem(Website* lowestKeyItem) const
 {
     // Return if the tree is empty
