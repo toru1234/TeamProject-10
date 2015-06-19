@@ -3,7 +3,7 @@
 
 ///////////////////////// public function definitions ///////////////////////////
 
-bool BinarySearchTree::insert(string key, const Website & newEntry)
+bool BinarySearchTree::insert(string key, Website* newEntry)
 {
     BinaryNode* newNodePtr = new BinaryNode(newEntry);
     newNodePtr->setKey(key);
@@ -13,6 +13,16 @@ bool BinarySearchTree::insert(string key, const Website & newEntry)
     return true;
 }
 
+
+bool BinarySearchTree::removeAll(const string key)
+{
+    if (remove(key))
+    {
+        remove(key);
+        return true;
+    }
+    return false;
+}
 
 bool BinarySearchTree::remove(const string key)
 {
@@ -26,16 +36,7 @@ bool BinarySearchTree::remove(const string key)
     return isSuccessful;
 }
 
-void BinarySearchTree::removeAll(const string key)
-{
-    if (remove(key))
-    {
-        remove(key);
-    }
-    
-}
-
-bool BinarySearchTree::getEntry(const string key, vector<Website> & returnedItems) const
+bool BinarySearchTree::getEntry(const string key, vector<Website> &returnedItems) const
 {
     // check if the entry is valid
     if (findNode(this->rootPtr, key) == 0)
@@ -44,11 +45,18 @@ bool BinarySearchTree::getEntry(const string key, vector<Website> & returnedItem
     }
     else
     {
-        returnedItems.push_back(findNode(this->rootPtr, key) ->getWebsite());
+        BinaryNode *entryNode = findNode(this->rootPtr, key);
+        returnedItems.push_back(*entryNode ->getWebsite());
+        entryNode = entryNode->getRightPtr();
+        while(findNode(entryNode, key)!= 0)
+        {
+            returnedItems.push_back(*findNode(entryNode, key)->getWebsite());
+            entryNode = findNode(entryNode, key)->getRightPtr();
+        }
+        
         return true;
     }
 }
-
 
 
 //////////////////////////// private functions ////////////////////////////////////////////
@@ -75,6 +83,7 @@ BinaryNode* BinarySearchTree::_insert(BinaryNode* nodePtr, BinaryNode* newNodePt
     return nodePtr;
 }
 
+
 BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr, const string key, bool & success)
 {
     if (nodePtr == 0)
@@ -83,16 +92,27 @@ BinaryNode* BinarySearchTree::_remove(BinaryNode* nodePtr, const string key, boo
         return 0;
     }
     if (nodePtr->getKey() > key)
+        
         nodePtr->setLeftPtr(_remove(nodePtr->getLeftPtr(), key, success));
+    
     else if (nodePtr->getKey() < key)
+        
         nodePtr->setRightPtr(_remove(nodePtr->getRightPtr(), key, success));
+    
     else
+        
     {
+        
         nodePtr = deleteNode(nodePtr);
+        
         success = true;
+        
     }
+    
     return nodePtr;
+    
 }
+
 
 BinaryNode* BinarySearchTree::deleteNode(BinaryNode* nodePtr)
 {
@@ -118,14 +138,14 @@ BinaryNode* BinarySearchTree::deleteNode(BinaryNode* nodePtr)
     }
     else
     {
-        Website newNodeValue;
+        Website* newNodeValue;
         nodePtr->setRightPtr(removeLeftmostNode(nodePtr->getRightPtr(), newNodeValue));
         nodePtr->setItem(newNodeValue);
         return nodePtr;
     }
 }
 
-BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr, Website & successor)
+BinaryNode* BinarySearchTree::removeLeftmostNode(BinaryNode* nodePtr, Website* successor)
 {
     if (nodePtr->getLeftPtr() == 0)
     {
@@ -147,8 +167,8 @@ BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr, const string key) co
     if (nodePtr == 0)
     {
         return 0;
+        
     }
-    
     // tree is not empty
     // Iterate through the tree
     else if (nodePtr->getKey() > key)
@@ -159,15 +179,10 @@ BinaryNode* BinarySearchTree::findNode(BinaryNode* nodePtr, const string key) co
     {
         return findNode(nodePtr->getRightPtr(), key);
     }
-    else{
-        if (nodePtr->getRightPtr()->getKey() == key)
-            return findNode(nodePtr->getRightPtr(), key);
-        else
-            return nodePtr;
-    }
+    return nodePtr;
 }
 
-bool BinarySearchTree::getHighestKeyItem(Website & largestItem) const
+bool BinarySearchTree::getHighestKeyItem(Website* largestItem) const
 {
     // Return if the tree is empty
     if (this->isEmpty())
@@ -186,7 +201,7 @@ bool BinarySearchTree::getHighestKeyItem(Website & largestItem) const
     return true;
 }
 
-bool BinarySearchTree::getLowestKeyItem(Website & lowestKeyItem) const
+bool BinarySearchTree::getLowestKeyItem(Website* lowestKeyItem) const
 {
     // Return if the tree is empty
     if (this->isEmpty())
