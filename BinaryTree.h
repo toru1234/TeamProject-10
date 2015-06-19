@@ -31,22 +31,20 @@ public:
     void writeSecondaryKeyinFile(vector<Website>& outputFile)
     {_writeSecondaryKeyinFile(rootPtr, outputFile);}
     void inOrder(void visit(Website &),
-                 const Website & minItem,
-                 const Website & maxItem) const;
+                Website* minItem,
+                Website* maxItem) const;
     void postOrder(void visit(Website &)) const{_postorder(visit, rootPtr);}
     void bfsOrder(void visit(Website &)) const;
     void indented() const {_printTreeIndented(rootPtr, 1);}
-    bool searchInRange(const Website & minVal, const Website & maxVal);
+    bool searchInRange(Website* minVal, Website* maxVal);
     int getCount(){return count;}
     
     
     
     // abstract functions to be implemented by derived class
-    virtual bool insert(const string inputString, const Website & newData) = 0;
-    virtual bool remove(const string key) = 0;
-    virtual bool getEntry(const string key, vector<Website>& returnedItems) const = 0;
-    
-    BinaryNode* searchInRange(const Website & minRange, const Website & maxRange) const;
+    virtual bool insert(const string inputString, Website* newData) = 0;
+    virtual bool getEntry(const string key, vector<Website> &returnedItems) const = 0;
+    BinaryNode* searchInRange(Website* minRange, Website* maxRange) const;
     
 private:
     // delete all nodes from the tree
@@ -60,11 +58,10 @@ private:
     void _inorder(void visit(Website &), BinaryNode* nodePtr) const;
     void _writeUniqueKeyinFile(BinaryNode* nodePtr, vector<Website>&);
     void _writeSecondaryKeyinFile(BinaryNode* nodePtr, vector<Website>&);
-    void _inorder(void visit(Website &), BinaryNode* nodePtr, const Website & minItem, const Website & maxItem) const;
+    void _inorder(void visit(Website &), BinaryNode* nodePtr, Website* minItem, Website* maxItem) const;
     void _postorder(void visit(Website &), BinaryNode* nodePtr) const;
     void _printTreeIndented(BinaryNode* nodePtr, int depth) const;
     
 };
 
 #endif
-
