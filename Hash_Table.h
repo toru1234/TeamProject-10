@@ -7,6 +7,7 @@
 #define HASH_TABLE_H_INCLUDED
 
 #include "Website.h"
+#include <vector>
 #include <iostream>
 
 using namespace std;
@@ -32,7 +33,7 @@ private:
     };
     //the hash table array
     Hash_Entry *table;
-    
+    vector<Website> overflow;
     int getKey(const string &input) const;
     
 public:
@@ -50,7 +51,7 @@ public:
     // getters for the hash size and the table size
     int getTableSize() const {return tablesize;}
     int getBucketSize() const {return bucketsize;}
-    
+    int getLoadFactor()const { return static_cast<double>(load) / tablesize * 100;}
     
     bool insert(Website input);
     bool deleteItem(const string &strkey);
