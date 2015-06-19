@@ -27,9 +27,7 @@ public:
     void clear()			{destroyTree(rootPtr); rootPtr = 0; count = 0;}
     void preOrder(void visit(Website &)) const {_preorder(visit, rootPtr);}
     void inOrder(void visit(Website &)) const  {_inorder(visit, rootPtr);}
-    void writeUniqueKeyinFile(vector<Website>& outputFile)  {_writeUniqueKeyinFile(rootPtr, outputFile);}
-    void writeSecondaryKeyinFile(vector<Website>& outputFile)
-    {_writeSecondaryKeyinFile(rootPtr, outputFile);}
+    void writeNodesinFile(vector<Website>& outputFile)  {_writeNodesinFile(rootPtr, outputFile);}
     void inOrder(void visit(Website &),
                 Website* minItem,
                 Website* maxItem) const;
@@ -56,8 +54,7 @@ private:
     // internal traverse
     void _preorder(void visit(Website &), BinaryNode* nodePtr) const;
     void _inorder(void visit(Website &), BinaryNode* nodePtr) const;
-    void _writeUniqueKeyinFile(BinaryNode* nodePtr, vector<Website>&);
-    void _writeSecondaryKeyinFile(BinaryNode* nodePtr, vector<Website>&);
+    void _writeNodesinFile(BinaryNode* nodePtr, vector<Website>&);
     void _inorder(void visit(Website &), BinaryNode* nodePtr, Website* minItem, Website* maxItem) const;
     void _postorder(void visit(Website &), BinaryNode* nodePtr) const;
     void _printTreeIndented(BinaryNode* nodePtr, int depth) const;
