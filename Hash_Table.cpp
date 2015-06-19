@@ -1,4 +1,3 @@
-
 #include "Hash_Table.h"
 /*******************************************
  default constructor
@@ -95,32 +94,6 @@ int Hash_Table::getKey(const string &input) const
     }
     return sum % tablesize;
 }
-
-/*******************************************
- deleteItem function
- this function searches the key in the hash
- table. If the key is found in table, return
- true otherwise, return false
- *******************************************/
-bool Hash_Table::deleteItem(const string &strkey)
-{
-    int key = getKey(strkey);
-    
-    for(int i = 0; i < table[key].count; i++)
-    {
-        //if the strkey matches the "key" in the bucket, replace it with the following items
-        if(strkey == table[key].bucket[i].getName())
-        {
-            for(int j = i; j <table[key].count; j++)
-            {
-                table[key].bucket[j] = table[key].bucket[j + 1];
-            }
-            table[key].count--;
-            return true;
-        }
-    }
-    return false;
-}
 /*******************************************
  insert function
  get the key from the inputed website.
@@ -128,7 +101,7 @@ bool Hash_Table::deleteItem(const string &strkey)
  Else, insert the data into the table's bucket,
  and add count by 1, return true.
  *******************************************/
-bool Hash_Table::insert(const Website &input)
+bool Hash_Table::insert(Website input)
 {
     //get the key from the string
     int key = getKey(input.getName());
@@ -160,6 +133,30 @@ bool Hash_Table::insert(const Website &input)
     return true;
 }
 
+
+/*******************************************
+ deleteItem function
+ delete the target item
+ *******************************************/
+bool Hash_Table::deleteItem(const string &strkey)
+{
+    int key = getKey(strkey);
+    
+    for(int i = 0; i < table[key].count; i++)
+    {
+        //if the strkey matches the "key" in the bucket, replace it with the following items
+        if(strkey == table[key].bucket[i].getName())
+        {
+            for(int j = i; j <table[key].count; j++)
+            {
+                table[key].bucket[j] = table[key].bucket[j + 1];
+            }
+            table[key].count--;
+            return true;
+        }
+    }
+    return false;
+}
 
 /*******************************************
  Printable function
